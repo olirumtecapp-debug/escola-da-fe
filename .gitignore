@@ -1,0 +1,11 @@
+﻿node_modules
+.vercel
+*.zip
+*.log
+*.bak
+*.bak_purified
+*.pre_audio_bak
+*.pre_history_fix
+.DS_Store
+Thumbs.db
+data/

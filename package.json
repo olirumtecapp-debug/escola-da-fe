@@ -1,0 +1,10 @@
+﻿{
+  "name": "escola-da-fe",
+  "version": "1.0.0",
+  "description": "Escola da Fé — Plataforma Católica de Formação",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  }
+}
