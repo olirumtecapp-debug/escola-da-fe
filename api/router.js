@@ -1,8 +1,11 @@
-// api/[...rota].js — funcao unica que atende TODAS as rotas /api/*
+// api/router.js — funcao unica que atende TODAS as rotas /api/*
 //
 // Motivo: o plano gratuito da Vercel permite no maximo 12 funcoes por deploy, e o projeto
 // chegou a 15. Concentrando tudo aqui, o limite deixa de existir: este e o unico arquivo
 // dentro de /api, e os atendentes ficam em /lib/handlers (que nao contam como funcao).
+//
+// O vercel.json manda todo /api/* para ca, passando o caminho em ?rota=:
+//   { "source": "/api/(.*)", "destination": "/api/router?rota=$1" }
 //
 // As rotas publicas continuam exatamente as mesmas: /api/student/stats, /api/inbox/send,
 // /api/asaas-webhook, /api/admin/login, etc.

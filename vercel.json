@@ -1,1 +1,13 @@
-{"version":2,"rewrites":[{"source":"/((?!api/).*)","destination":"/index.html"}]}
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/router?rota=$1"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
