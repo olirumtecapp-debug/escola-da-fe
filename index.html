@@ -12846,8 +12846,8 @@ window.onload = function() {
 
     <script>
     // ================= PAINEL ADMIN =================
-    const ADMIN_USER = 'admplus';
-    const ADMIN_PASS = '16Bl33@p';
+    // A senha do painel NAO fica mais no codigo do site: ela e validada no servidor
+    // (/api/admin/login) e guardada no banco apenas como hash.
     let adminAuthenticated = false;
     let adminTemSenhaPropria = false;
 
@@ -12900,9 +12900,9 @@ window.onload = function() {
             liberado = !!data.ok;
             adminTemSenhaPropria = !!data.hasCustomPassword;
         } catch (err) {
-            // se a API nao responder, mantem o acesso pela credencial local
-            console.warn('[Admin] API de login indisponivel, usando verificacao local.', err);
-            liberado = (user === ADMIN_USER && pass === ADMIN_PASS);
+            // sem a API nao ha liberacao: a senha nao existe mais no codigo do site
+            console.warn('[Admin] API de login indisponivel.', err);
+            liberado = false;
         }
 
         if (liberado) {
