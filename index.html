@@ -12737,6 +12737,34 @@ window.onload = function() {
                     </button>
                     <p id="admin-login-error" class="text-xs text-rose-600 text-center hidden">Usuário ou senha incorretos.</p>
                 </form>
+
+                <div class="max-w-sm mx-auto mt-4 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="toggleAdminSenhaForm()" class="w-full text-xs font-bold text-amber-700 hover:text-amber-800 underline cursor-pointer">
+                        Criar ou alterar a senha do admin
+                    </button>
+                    <form id="admin-senha-form" onsubmit="handleAdminSenhaChange(event)" class="hidden space-y-3 mt-3">
+                        <p id="admin-senha-status" class="text-[11px] text-slate-500 text-center"></p>
+                        <div>
+                            <label id="admin-senha-atual-label" class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Senha atual</label>
+                            <input type="password" id="admin-senha-atual" autocomplete="off" placeholder="Senha atual"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 shadow-sm transition-all" />
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Nova senha</label>
+                            <input type="password" id="admin-senha-nova" autocomplete="new-password" placeholder="Minimo 6 caracteres"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 shadow-sm transition-all" />
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">Repita a nova senha</label>
+                            <input type="password" id="admin-senha-confirma" autocomplete="new-password" placeholder="Repita a nova senha"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 shadow-sm transition-all" />
+                        </div>
+                        <button type="submit" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow transition-all cursor-pointer">
+                            Salvar nova senha
+                        </button>
+                        <p id="admin-senha-msg" class="text-xs text-center"></p>
+                    </form>
+                </div>
             </div>
 
             <!-- Painel (após login) -->
@@ -12821,6 +12849,7 @@ window.onload = function() {
     const ADMIN_USER = 'admplus';
     const ADMIN_PASS = '16Bl33@p';
     let adminAuthenticated = false;
+    let adminTemSenhaPropria = false;
 
     document.addEventListener('keydown', function(e) {
         if (e.altKey && e.shiftKey && (e.key === 'M' || e.key === 'm')) {
@@ -12854,17 +12883,102 @@ window.onload = function() {
         if (modal) modal.classList.add('hidden');
     }
 
-    function handleAdminLogin(e) {
+    async function handleAdminLogin(e) {
         e.preventDefault();
         const user = document.getElementById('admin-username').value.trim();
         const pass = document.getElementById('admin-password').value;
-        if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        const erroEl = document.getElementById('admin-login-error');
+        let liberado = false;
+
+        try {
+            const res = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user: user, password: pass })
+            });
+            const data = await res.json();
+            liberado = !!data.ok;
+            adminTemSenhaPropria = !!data.hasCustomPassword;
+        } catch (err) {
+            // se a API nao responder, mantem o acesso pela credencial local
+            console.warn('[Admin] API de login indisponivel, usando verificacao local.', err);
+            liberado = (user === ADMIN_USER && pass === ADMIN_PASS);
+        }
+
+        if (liberado) {
             adminAuthenticated = true;
-            document.getElementById('admin-login-error').classList.add('hidden');
+            erroEl.classList.add('hidden');
             showAdminPanel();
         } else {
-            document.getElementById('admin-login-error').classList.remove('hidden');
+            erroEl.classList.remove('hidden');
             document.getElementById('admin-password').value = '';
+        }
+    }
+
+    function toggleAdminSenhaForm() {
+        const form = document.getElementById('admin-senha-form');
+        const status = document.getElementById('admin-senha-status');
+        if (!form) return;
+        form.classList.toggle('hidden');
+        if (!form.classList.contains('hidden')) {
+            atualizarStatusSenhaAdmin();
+        } else if (status) {
+            status.innerText = '';
+        }
+    }
+
+    async function atualizarStatusSenhaAdmin() {
+        const status = document.getElementById('admin-senha-status');
+        const rotuloAtual = document.getElementById('admin-senha-atual-label');
+        if (!status) return;
+        status.innerText = 'Verificando...';
+        try {
+            const res = await fetch('/api/admin/auth-status');
+            const data = await res.json();
+            adminTemSenhaPropria = !!data.hasCustomPassword;
+        } catch (err) {
+            status.innerText = 'Nao foi possivel consultar o servidor agora.';
+            return;
+        }
+        if (adminTemSenhaPropria) {
+            status.innerText = 'Voce ja criou uma senha propria. Informe a senha atual para trocar.';
+            if (rotuloAtual) rotuloAtual.innerText = 'Senha atual (a sua)';
+        } else {
+            status.innerText = 'Voce ainda usa a senha padrao. Informe-a abaixo e escolha a sua nova senha.';
+            if (rotuloAtual) rotuloAtual.innerText = 'Senha atual (a padrao, que voce ja usa)';
+        }
+    }
+
+    async function handleAdminSenhaChange(e) {
+        e.preventDefault();
+        const atual = document.getElementById('admin-senha-atual').value;
+        const nova = document.getElementById('admin-senha-nova').value;
+        const confirma = document.getElementById('admin-senha-confirma').value;
+        const msg = document.getElementById('admin-senha-msg');
+        const pintar = (texto, cor) => { if (msg) { msg.innerText = texto; msg.className = 'text-xs text-center ' + cor; } };
+
+        if (nova !== confirma) { pintar('As duas senhas novas nao sao iguais.', 'text-rose-600'); return; }
+        if (nova.length < 6) { pintar('A nova senha precisa ter pelo menos 6 caracteres.', 'text-rose-600'); return; }
+
+        pintar('Salvando...', 'text-slate-500');
+        try {
+            const res = await fetch('/api/admin/set-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ currentPassword: atual, newPassword: nova })
+            });
+            const data = await res.json();
+            if (data.ok) {
+                adminTemSenhaPropria = true;
+                pintar('Senha alterada com sucesso! Use a nova senha no proximo acesso.', 'text-emerald-600');
+                document.getElementById('admin-senha-atual').value = '';
+                document.getElementById('admin-senha-nova').value = '';
+                document.getElementById('admin-senha-confirma').value = '';
+            } else {
+                pintar(data.error || 'Nao foi possivel alterar a senha.', 'text-rose-600');
+            }
+        } catch (err) {
+            pintar('Erro de conexao ao salvar a senha.', 'text-rose-600');
         }
     }
 

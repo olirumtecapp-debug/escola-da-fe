@@ -266,3 +266,24 @@ export async function clearApprovals() {
     }
     return removidos;
 }
+
+// ================= AUTENTICACAO DO PAINEL ADMIN =================
+// A senha NAO fica no HTML: fica nesta colecao como HMAC-SHA256, usando um segredo que
+// so existe no servidor (variavel de ambiente ADMIN_AUTH_SECRET na Vercel). Assim, mesmo
+// que alguem leia o banco, o valor guardado nao revela a senha.
+
+export const COL_ADMIN_AUTH = 'escola_admin_auth';
+
+export async function getAdminAuth() {
+    const res = await fsRequest(basePath(COL_ADMIN_AUTH) + '/main');
+    if (res.ok && res.body && res.body.fields) return docToObject(res.body);
+    return null;
+}
+
+export async function saveAdminAuth(registro) {
+    return upsertDoc(COL_ADMIN_AUTH, 'main', registro);
+}
+
+export async function clearAdminAuth() {
+    return deleteDoc(COL_ADMIN_AUTH, 'main');
+}
