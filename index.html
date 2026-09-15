@@ -12790,6 +12790,7 @@ window.onload = function() {
                     <button onclick="switchAdminTab('students')" id="admin-tab-students" class="px-4 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-amber-600 text-amber-700 transition-all">Alunos</button>
                     <button onclick="switchAdminTab('messages')" id="admin-tab-messages" class="px-4 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 transition-all">Mensagens</button>
                     <button onclick="switchAdminTab('broadcast')" id="admin-tab-broadcast" class="px-4 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 transition-all">Enviar Comunicado</button>
+                    <button onclick="switchAdminTab('metrics')" id="admin-tab-metrics" class="px-4 py-3 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 transition-all">Métricas</button>
                 </div>
 
                 <div class="p-5 max-h-96 overflow-y-auto">
@@ -12832,6 +12833,12 @@ window.onload = function() {
                                 Publicar Comunicado
                             </button>
                         </form>
+                    </div>
+                    <!-- Metricas da turma -->
+                    <div id="admin-section-metrics" class="hidden">
+                        <div id="admin-metrics-cards" class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5"></div>
+                        <div id="admin-metrics-modules" class="mb-5"></div>
+                        <div id="admin-metrics-recent"></div>
                     </div>
                 </div>
 
@@ -13072,7 +13079,7 @@ window.onload = function() {
     }
 
     function switchAdminTab(tab) {
-        ['students','messages','broadcast'].forEach(t => {
+        ['students','messages','broadcast','metrics'].forEach(t => {
             const btn = document.getElementById('admin-tab-' + t);
             const sec = document.getElementById('admin-section-' + t);
             if (btn) { btn.classList.remove('border-amber-600','text-amber-700'); btn.classList.add('border-transparent','text-slate-500'); }
@@ -13082,6 +13089,70 @@ window.onload = function() {
         const activeSec = document.getElementById('admin-section-' + tab);
         if (activeBtn) { activeBtn.classList.add('border-amber-600','text-amber-700'); activeBtn.classList.remove('border-transparent','text-slate-500'); }
         if (activeSec) activeSec.classList.remove('hidden');
+        if (tab === 'metrics') loadAdminMetrics();
+    }
+
+    async function loadAdminMetrics() {
+        const cards = document.getElementById('admin-metrics-cards');
+        const modulosEl = document.getElementById('admin-metrics-modules');
+        const recentesEl = document.getElementById('admin-metrics-recent');
+        if (!cards) return;
+        cards.innerHTML = '<p class="col-span-full text-xs text-slate-400 text-center py-4">Carregando métricas...</p>';
+
+        try {
+            const res = await fetch('/api/student/stats');
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const d = await res.json();
+
+            const cartao = (valor, rotulo, cor) => '<div class="bg-white rounded-xl p-3 text-center shadow-sm border border-slate-100">'
+                + '<div class="text-2xl font-bold ' + cor + '">' + valor + '</div>'
+                + '<div class="text-[10px] text-slate-500 uppercase font-bold tracking-wide mt-0.5">' + rotulo + '</div>'
+                + '</div>';
+
+            cards.innerHTML =
+                cartao(d.totalStudents || 0, 'Alunos', 'text-amber-600') +
+                cartao(Number(d.totalXp || 0).toLocaleString('pt-BR'), 'XP da turma', 'text-indigo-600') +
+                cartao(d.avgXp || 0, 'XP médio', 'text-sky-600') +
+                cartao(d.avgStreak || 0, 'Ofensiva média', 'text-orange-600') +
+                cartao(d.activeToday || 0, 'Ativos hoje', 'text-emerald-600') +
+                cartao(d.activeLast7Days || 0, 'Ativos em 7 dias', 'text-teal-600') +
+                cartao(d.totalCompletedModules || 0, 'Módulos concluídos', 'text-violet-600') +
+                cartao(d.avgCompletedPerStudent || 0, 'Média por aluno', 'text-rose-600') +
+                cartao(d.certifiedStudents || 0, 'Certificados', 'text-yellow-600');
+
+            const ranking = d.rankingModulos || [];
+            if (modulosEl) {
+                if (ranking.length === 0) {
+                    modulosEl.innerHTML = '<p class="text-xs text-slate-400 text-center py-2">Nenhum módulo concluído ainda.</p>';
+                } else {
+                    const max = ranking[0].count || 1;
+                    modulosEl.innerHTML = '<label class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Módulos mais concluídos</label>'
+                        + '<div class="space-y-1.5 mt-2">'
+                        + ranking.map(r => '<div class="flex items-center gap-2">'
+                            + '<span class="text-[11px] font-mono font-bold text-slate-600 w-12">' + r.id + '</span>'
+                            + '<div class="flex-1 bg-slate-100 rounded-full h-2"><div class="bg-amber-500 h-2 rounded-full" style="width:' + Math.round((r.count / max) * 100) + '%"></div></div>'
+                            + '<span class="text-[11px] font-bold text-slate-500">' + r.count + '</span>'
+                            + '</div>').join('')
+                        + '</div>';
+                }
+            }
+
+            if (recentesEl) {
+                const lista = (d.recentStudents || []).map(s => {
+                    const qtd = s.completedCount || 0;
+                    const selo = qtd >= 50 ? '<span class="text-[10px] font-bold text-yellow-700 bg-yellow-100 px-1.5 py-0.5 rounded-full">Certificado</span>' : '';
+                    return '<div class="bg-white border border-slate-200 rounded-xl p-3 flex items-center justify-between">'
+                        + '<div><p class="text-sm font-semibold text-slate-800">' + (s.fullName || '—') + '</p>'
+                        + '<p class="text-[11px] text-slate-500">' + qtd + ' módulos • ' + (s.xp || 0) + ' XP</p></div>'
+                        + selo + '</div>';
+                }).join('');
+                recentesEl.innerHTML = '<label class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Alunos recentes</label>'
+                    + (lista ? '<div class="space-y-2 mt-2">' + lista + '</div>' : '<p class="text-xs text-slate-400 text-center py-2">Nenhum aluno cadastrado ainda.</p>');
+            }
+        } catch (err) {
+            cards.innerHTML = '<p class="col-span-full text-xs text-slate-400 text-center py-4">API não disponível em modo estático.</p>';
+            console.warn('[AdminMetrics] Erro ao carregar métricas:', err);
+        }
     }
 
     async function handleAdminBroadcast(e) {
