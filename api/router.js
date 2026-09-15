@@ -1,4 +1,4 @@
-// api/router.js — funcao unica que atende TODAS as rotas /api/*
+﻿// api/router.js â€” funcao unica que atende TODAS as rotas /api/*
 //
 // Motivo: o plano gratuito da Vercel permite no maximo 12 funcoes por deploy, e o projeto
 // chegou a 15. Concentrando tudo aqui, o limite deixa de existir: este e o unico arquivo
@@ -18,6 +18,7 @@ import markSupported from '../lib/handlers/student/mark-supported.js';
 import resetSupported from '../lib/handlers/student/reset-supported.js';
 import inboxList from '../lib/handlers/inbox/list.js';
 import inboxSend from '../lib/handlers/inbox/send.js';
+import inboxUpdate from '../lib/handlers/inbox/update.js';
 import asaasWebhook from '../lib/handlers/asaas-webhook.js';
 import adminStudents from '../lib/handlers/admin/students.js';
 import adminMessages from '../lib/handlers/admin/messages.js';
@@ -35,6 +36,7 @@ const ROTAS = {
     'student/reset-supported': resetSupported,
     'inbox/list': inboxList,
     'inbox/send': inboxSend,
+    'inbox/update': inboxUpdate,
     'asaas-webhook': asaasWebhook,
     'admin/students': adminStudents,
     'admin/messages': adminMessages,
