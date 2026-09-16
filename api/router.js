@@ -24,6 +24,7 @@ import asaasWebhook from '../lib/handlers/asaas-webhook.js';
 import adminStudents from '../lib/handlers/admin/students.js';
 import adminMessages from '../lib/handlers/admin/messages.js';
 import adminBroadcast from '../lib/handlers/admin/broadcast.js';
+import adminBroadcasts from '../lib/handlers/admin/broadcasts.js';
 import adminLogin from '../lib/handlers/admin/login.js';
 import adminSetPassword from '../lib/handlers/admin/set-password.js';
 import adminAuthStatus from '../lib/handlers/admin/auth-status.js';
@@ -43,6 +44,7 @@ const ROTAS = {
     'admin/students': adminStudents,
     'admin/messages': adminMessages,
     'admin/broadcast': adminBroadcast,
+    'admin/broadcasts': adminBroadcasts,
     'admin/login': adminLogin,
     'admin/set-password': adminSetPassword,
     'admin/auth-status': adminAuthStatus

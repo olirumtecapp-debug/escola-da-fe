@@ -12963,6 +12963,12 @@ window.onload = function() {
                                 Publicar Comunicado
                             </button>
                         </form>
+                        <div class="mt-6 pt-5 border-t border-slate-200">
+                            <label class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Comunicados publicados</label>
+                            <div id="admin-broadcasts-list" class="space-y-2 mt-2">
+                                <p class="text-xs text-slate-400 text-center py-3">Carregando...</p>
+                            </div>
+                        </div>
                     </div>
                     <!-- Metricas da turma -->
                     <div id="admin-section-metrics" class="hidden">
@@ -13306,6 +13312,53 @@ window.onload = function() {
         }
     }
 
+    async function loadAdminBroadcasts() {
+        const alvo = document.getElementById('admin-broadcasts-list');
+        if (!alvo) return;
+        alvo.innerHTML = '<p class="text-xs text-slate-400 text-center py-3">Carregando...</p>';
+        try {
+            const res = await fetch('/api/admin/broadcasts');
+            const data = await res.json();
+            const lista = (data && data.broadcasts) || [];
+            if (!lista.length) {
+                alvo.innerHTML = '<p class="text-xs text-slate-400 text-center py-3">Nenhum comunicado publicado ainda.</p>';
+                return;
+            }
+            alvo.innerHTML = lista.map(b =>
+                '<div class="bg-white border border-slate-200 rounded-xl p-3 flex items-start justify-between gap-3">' +
+                    '<div class="min-w-0">' +
+                        '<div class="flex items-center gap-2 mb-0.5">' +
+                            '<span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">' + (b.tag || 'Comunicado') + '</span>' +
+                            '<span class="text-[10px] text-slate-400">' + (b.date || '') + '</span>' +
+                        '</div>' +
+                        '<p class="text-xs font-bold text-slate-800 truncate">' + b.title + '</p>' +
+                        '<p class="text-[11px] text-slate-500 line-clamp-2">' + (b.content || '') + '</p>' +
+                    '</div>' +
+                    '<button onclick="adminExcluirComunicado(\'' + b.id + '\')" class="shrink-0 text-[10px] font-bold bg-rose-50 text-rose-700 px-2 py-1 rounded-lg hover:bg-rose-100">Excluir</button>' +
+                '</div>'
+            ).join('');
+        } catch (e) {
+            alvo.innerHTML = '<p class="text-xs text-slate-400 text-center py-3">Não foi possível carregar os comunicados.</p>';
+        }
+    }
+
+    async function adminExcluirComunicado(id) {
+        if (!confirm('Excluir este comunicado? Ele sai do mural de todos os alunos.')) return;
+        try {
+            const res = await fetch('/api/admin/broadcasts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, action: 'delete' })
+            });
+            const data = await res.json();
+            if (data.ok) { showToast('Comunicado excluído.', 'success'); loadAdminBroadcasts(); }
+            else showToast(data.error || 'Não foi possível excluir.', 'warning');
+        } catch (e) {
+            showToast('Erro de conexão ao excluir.', 'warning');
+        }
+    }
+    window.adminExcluirComunicado = adminExcluirComunicado;
+
     function switchAdminTab(tab) {
         ['students','messages','broadcast','metrics'].forEach(t => {
             const btn = document.getElementById('admin-tab-' + t);
@@ -13318,6 +13371,7 @@ window.onload = function() {
         if (activeBtn) { activeBtn.classList.add('border-amber-600','text-amber-700'); activeBtn.classList.remove('border-transparent','text-slate-500'); }
         if (activeSec) activeSec.classList.remove('hidden');
         if (tab === 'metrics') loadAdminMetrics();
+        if (tab === 'broadcast') loadAdminBroadcasts();
     }
 
     async function loadAdminMetrics() {
@@ -13397,6 +13451,7 @@ window.onload = function() {
             });
             if (res.ok) {
                 showToast('Comunicado publicado com sucesso!', 'success');
+            if (typeof loadAdminBroadcasts === 'function') loadAdminBroadcasts();
                 document.getElementById('admin-broadcast-title').value = '';
                 document.getElementById('admin-broadcast-content').value = '';
                 InboxManager.loadInbox();
