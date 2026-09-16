@@ -12415,16 +12415,22 @@ const StudentManager = {
     async restoreProgressFromServer(email) {
         if (!email) return;
         try {
-            let pin = window.escolaAlunoPin || '';
+            // o PIN fica lembrado apenas durante a sessao do navegador (nao grava para sempre)
+            let pin = window.escolaAlunoPin || (function () { try { return sessionStorage.getItem('escola_pin_sessao') || ''; } catch (e) { return ''; } })();
             let res = await fetch('/api/student/load?email=' + encodeURIComponent(email) + (pin ? '&pin=' + encodeURIComponent(pin) : ''));
             if (!res.ok) return;
             let data = await res.json();
             if (data && data.precisaPin) {
-                pin = (prompt('Esta conta esta protegida por PIN.\n\nDigite seu PIN ou deixe em branco para recuperar com o codigo de recuperacao:') || '').trim();
-                if (!pin) { if (typeof handleRecuperarProgresso === 'function') handleRecuperarProgresso(); return; }
-                window.escolaAlunoPin = pin;
-                res = await fetch('/api/student/load?email=' + encodeURIComponent(email) + '&pin=' + encodeURIComponent(pin));
-                data = await res.json();
+                // conta protegida por PIN: NAO interrompe o aluno a cada recarga da pagina.
+                // quem precisa recuperar em outro aparelho usa "recuperar meu progresso" (codigo por e-mail).
+                console.info('[Sync] conta com PIN: restauracao da nuvem adiada ate o aluno pedir.');
+                return;
+            }
+            if (data && data.pinInvalido) {
+                // o PIN guardado na sessao nao vale mais: esquece e segue com o progresso local
+                try { sessionStorage.removeItem('escola_pin_sessao'); } catch (e) {}
+                window.escolaAlunoPin = '';
+                return;
             }
             if (data && data.pinInvalido) { showToast('PIN incorreto para este e-mail.', 'warning'); return; }
             if (!data.ok || !data.progress) return;
@@ -12655,6 +12661,7 @@ function closeEnrollmentModal() {
         const code = (prompt('Digite o seu CODIGO DE RECUPERACAO (ex: ABC123):') || '').trim();
         const novoPin = (prompt('Quer definir um PIN novo para os proximos acessos?\n\nDigite de 4 a 6 digitos, ou deixe vazio para entrar sempre so com o e-mail:') || '').trim();
         if (novoPin && !/^\d{4,6}$/.test(novoPin)) { showToast('PIN invalido: use de 4 a 6 digitos.', 'warning'); return; }
+        if (novoPin) { window.escolaAlunoPin = novoPin; try { sessionStorage.setItem('escola_pin_sessao', novoPin); } catch (e) {} }
         if (!code) return;
         try {
             const res = await fetch('/api/student/recover', {
