@@ -12474,7 +12474,8 @@ const InboxManager = {
             const res = await fetch(`/api/inbox/list?email=${encodeURIComponent(email)}`);
             if (res.ok) {
                 const data = await res.json();
-                this.cachedBroadcasts = [...localWelcome, ...(data.broadcasts || [])];
+                const comunicadosDoServidor = (data && data.broadcasts) ? data.broadcasts : [];
+                    this.cachedBroadcasts = comunicadosDoServidor.length ? comunicadosDoServidor : [...localWelcome];
                 this.cachedUserMessages = data.userMessages || [];
 
                 if (container) {
