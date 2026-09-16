@@ -12643,12 +12643,14 @@ function closeEnrollmentModal() {
         const email = (prompt('Qual o e-mail da sua conta?') || '').trim();
         if (!email || !email.includes("@")) return;
         const code = (prompt('Digite o seu CODIGO DE RECUPERACAO (ex: ABC123):') || '').trim();
+        const novoPin = (prompt('Quer definir um PIN novo para os proximos acessos?\n\nDigite de 4 a 6 digitos, ou deixe vazio para entrar sempre so com o e-mail:') || '').trim();
+        if (novoPin && !/^\d{4,6}$/.test(novoPin)) { showToast('PIN invalido: use de 4 a 6 digitos.', 'warning'); return; }
         if (!code) return;
         try {
             const res = await fetch('/api/student/recover', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email, code: code })
+                body: JSON.stringify({ email: email, code: code, newPin: novoPin || '' })
             });
             const data = await res.json();
             if (!data.ok) { showToast(data.error || "Nao foi possivel recuperar.", "warning"); return; }
