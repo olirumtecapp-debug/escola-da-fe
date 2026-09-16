@@ -12586,7 +12586,15 @@ function closeEnrollmentModal() {
 
 
     async function handleReceberCodigoPorEmail() {
-        const email = (prompt('Vamos enviar um código novo para o seu e-mail.\n\nDigite o e-mail da sua conta:') || '').trim();
+        const guardado = (typeof StudentManager !== 'undefined' && StudentManager.getStudent()) ? StudentManager.getStudent() : null;
+        const emailGuardado = guardado && guardado.email ? String(guardado.email).trim() : '';
+        let email = emailGuardado;
+        if (emailGuardado) {
+            const outro = prompt('Vamos enviar o código para o e-mail da sua matrícula:\n\n' + emailGuardado + '\n\nOK = enviar para este\nOu digite outro e-mail:', emailGuardado);
+            email = (outro || '').trim().toLowerCase();
+        } else {
+            email = (prompt('Vamos enviar um código novo para o seu e-mail.\n\nDigite o e-mail da sua conta:') || '').trim().toLowerCase();
+        }
         if (!email || !email.includes('@')) { showToast('Informe um e-mail válido.', 'warning'); return; }
         try {
             const res = await fetch('/api/student/enviar-codigo', {
