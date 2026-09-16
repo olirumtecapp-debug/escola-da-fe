@@ -13157,13 +13157,17 @@ window.onload = function() {
                         studentsEl.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">Nenhum aluno cadastrado ainda.</p>';
                     } else {
                         studentsEl.innerHTML = students.map(s => `
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-800">${s.fullName || '—'}</p>
-                                    <p class="text-[11px] text-slate-500">${s.email || '—'}</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-[10px] text-slate-400">${s.registeredAt ? new Date(s.registeredAt).toLocaleDateString('pt-BR') : '—'}</p>
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+                                <div class="flex items-center justify-between gap-2">
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-semibold text-slate-800 truncate">${s.fullName || '—'}</p>
+                                        <p class="text-[11px] text-slate-500 truncate">${s.email || '—'}</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">
+                                            ${s.completedCount || 0} módulos • ${s.xp || 0} XP
+                                            ${s.temPin ? ' • <span class="text-amber-700 font-bold">com PIN</span>' : ''}
+                                        </p>
+                                    </div>
+                                    <button onclick="adminRedefinirAcesso('${s.email}', '${(s.fullName || '').replace(/'/g, '')}')" class="shrink-0 text-[10px] font-bold bg-white border border-slate-300 text-slate-600 px-2 py-1 rounded-lg hover:bg-slate-100">Redefinir acesso</button>
                                 </div>
                             </div>
                         `).join('');
@@ -13311,6 +13315,27 @@ window.onload = function() {
             showToast('Erro de conexao ao arquivar.', 'warning');
         }
     }
+
+    async function adminRedefinirAcesso(email, nome) {
+        if (!confirm('Redefinir o acesso de ' + (nome || email) + '?\n\nO PIN dele será removido (volta a entrar só com o e-mail) e um novo código de recuperação será gerado para você entregar a ele.')) return;
+        try {
+            const res = await fetch('/api/admin/students', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, action: 'resetar-acesso' })
+            });
+            const data = await res.json();
+            if (data.ok) {
+                alert('Acesso de ' + (data.fullName || email) + ' redefinido.\n\nNOVO CODIGO DE RECUPERACAO: ' + data.recoveryCode + '\n\nEntregue este codigo ao aluno. Ele entra so com o e-mail e, se quiser, cria um novo PIN.');
+                loadAdminData();
+            } else {
+                showToast(data.error || 'Não foi possível redefinir.', 'warning');
+            }
+        } catch (e) {
+            showToast('Erro de conexão ao redefinir.', 'warning');
+        }
+    }
+    window.adminRedefinirAcesso = adminRedefinirAcesso;
 
     async function loadAdminBroadcasts() {
         const alvo = document.getElementById('admin-broadcasts-list');
