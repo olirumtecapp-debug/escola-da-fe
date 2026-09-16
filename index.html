@@ -12412,8 +12412,8 @@ const StudentManager = {
             if (!res.ok) return;
             let data = await res.json();
             if (data && data.precisaPin) {
-                pin = (prompt('Esta conta esta protegida por PIN. Digite seu PIN:') || '').trim();
-                if (!pin) return;
+                pin = (prompt('Esta conta esta protegida por PIN.\n\nDigite seu PIN ou deixe em branco para recuperar com o codigo de recuperacao:') || '').trim();
+                if (!pin) { if (typeof handleRecuperarProgresso === 'function') handleRecuperarProgresso(); return; }
                 window.escolaAlunoPin = pin;
                 res = await fetch('/api/student/load?email=' + encodeURIComponent(email) + '&pin=' + encodeURIComponent(pin));
                 data = await res.json();
