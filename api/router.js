@@ -14,6 +14,7 @@ import register from '../lib/handlers/student/register.js';
 import sync from '../lib/handlers/student/sync.js';
 import load from '../lib/handlers/student/load.js';
 import stats from '../lib/handlers/student/stats.js';
+import recover from '../lib/handlers/student/recover.js';
 import markSupported from '../lib/handlers/student/mark-supported.js';
 import resetSupported from '../lib/handlers/student/reset-supported.js';
 import inboxList from '../lib/handlers/inbox/list.js';
@@ -32,6 +33,7 @@ const ROTAS = {
     'student/sync': sync,
     'student/load': load,
     'student/stats': stats,
+    'student/recover': recover,
     'student/mark-supported': markSupported,
     'student/reset-supported': resetSupported,
     'inbox/list': inboxList,

@@ -1097,6 +1097,19 @@
                            class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 shadow-sm transition-all" />
                     <p class="text-[10px] text-slate-500 mt-1">Utilizado para vincular seu histórico de estudo, notas de quiz e receber comunicados pedagógicos.</p>
                 </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                                PIN de Seguranca <span class="text-slate-400 font-normal">(opcional, 4 a 6 digitos)</span>
+                            </label>
+                            <input type="tel" id="enrollment-pin" inputmode="numeric" maxlength="6" placeholder="Ex: 1234"
+                                   class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+                            <p class="text-[10px] text-slate-500 mt-1">Com PIN, so quem souber o PIN carrega seu progresso em outro aparelho.</p>
+                        </div>
+
+                        <button type="button" onclick="handleRecuperarProgresso()" class="w-full text-xs font-bold text-amber-700 hover:text-amber-800 underline cursor-pointer">
+                            Ja estudei aqui e troquei de aparelho - recuperar meu progresso
+                        </button>
+
 
                 <div class="pt-1">
                     <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs uppercase tracking-normal rounded-xl shadow-lg hover:shadow-amber-500/25 active:scale-95 transition-all flex items-center justify-center gap-2">
@@ -1467,6 +1480,18 @@ function saveProgress() {
     } catch (e) {
         console.error("Falha ao salvar progresso no localStorage:", e);
     }
+    // Sync cross-device: envia progresso ao servidor em background (silencioso)
+    try {
+        const _sm = (typeof StudentManager !== 'undefined') ? StudentManager : null;
+        const _st = _sm ? _sm.getStudent() : null;
+        if (_st && _st.email) {
+            fetch('/api/student/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: _st.email, progress: progress })
+            }).catch(() => {});
+        }
+    } catch (_e) {}
 }
 
 /* ================= DATA: STAGES ================= */
@@ -12343,15 +12368,23 @@ const StudentManager = {
         if (!student || !student.email) return;
 
         try {
-            await fetch('/api/student/register', {
+            const resp = await fetch('/api/student/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     fullName: student.fullName,
                     email: student.email,
+                    pin: student.pin || window.escolaAlunoPin || '',
                     progress: (typeof progress !== 'undefined') ? progress : {}
                 })
             });
+            try {
+                const dados = await resp.json();
+                if (dados && dados.recoveryCode) {
+                    window.escolaCodigoRecuperacao = dados.recoveryCode;
+                    alert('GUARDE ESTE CODIGO DE RECUPERACAO: ' + dados.recoveryCode + '\n\nCom ele voce recupera seu progresso em outro aparelho, mesmo se esquecer o e-mail.');
+                }
+            } catch (_e) {}
         } catch (e) {
             console.warn('[StudentManager] Sincronização offline');
         }
@@ -12366,6 +12399,48 @@ const StudentManager = {
         } else {
             this.updateUi();
             this.syncWithServer(student);
+            // Restaura progresso do servidor (sync cross-device)
+            this.restoreProgressFromServer(student.email);
+        }
+    },
+
+    async restoreProgressFromServer(email) {
+        if (!email) return;
+        try {
+            let pin = window.escolaAlunoPin || '';
+            let res = await fetch('/api/student/load?email=' + encodeURIComponent(email) + (pin ? '&pin=' + encodeURIComponent(pin) : ''));
+            if (!res.ok) return;
+            let data = await res.json();
+            if (data && data.precisaPin) {
+                pin = (prompt('Esta conta esta protegida por PIN. Digite seu PIN:') || '').trim();
+                if (!pin) return;
+                window.escolaAlunoPin = pin;
+                res = await fetch('/api/student/load?email=' + encodeURIComponent(email) + '&pin=' + encodeURIComponent(pin));
+                data = await res.json();
+            }
+            if (data && data.pinInvalido) { showToast('PIN incorreto para este e-mail.', 'warning'); return; }
+            if (!data.ok || !data.progress) return;
+            const serverProgress = data.progress;
+            const localXp = (typeof progress !== 'undefined' && progress) ? (progress.xp || 0) : 0;
+            const serverXp = serverProgress.xp || 0;
+            const localModules = (typeof progress !== 'undefined' && progress && Array.isArray(progress.completedModules)) ? progress.completedModules.length : 0;
+            const serverModules = Array.isArray(serverProgress.completedModules) ? serverProgress.completedModules.length : 0;
+            // Usa o progresso mais avançado (mais módulos ou mais XP)
+            if (serverModules > localModules || serverXp > localXp) {
+                if (typeof progress !== 'undefined' && progress) {
+                    Object.assign(progress, serverProgress);
+                    try { localStorage.setItem('escola_da_fe_progress', JSON.stringify(progress)); } catch(_e) {}
+                    // Atualiza a UI com o progresso restaurado
+                    if (typeof updateStats === 'function') updateStats();
+                    if (typeof renderStages === 'function') renderStages();
+                    if (typeof updateXpBar === 'function') updateXpBar();
+                    if (typeof updateMissions === 'function') updateMissions();
+                    StudentManager.updateUi();
+                    console.log(`[Sync ✅] Progresso restaurado do servidor: ${serverModules} módulos, ${serverXp} XP`);
+                }
+            }
+        } catch (e) {
+            console.warn('[Sync] Falha ao restaurar progresso do servidor:', e);
         }
     }
 };
@@ -12501,6 +12576,39 @@ function closeEnrollmentModal() {
     if (modal) modal.classList.add('hidden');
 }
 
+
+    async function handleRecuperarProgresso() {
+        const email = (prompt('Qual o e-mail da sua conta?') || '').trim();
+        if (!email || !email.includes("@")) return;
+        const code = (prompt('Digite o seu CODIGO DE RECUPERACAO (ex: ABC123):') || '').trim();
+        if (!code) return;
+        try {
+            const res = await fetch('/api/student/recover', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email, code: code })
+            });
+            const data = await res.json();
+            if (!data.ok) { showToast(data.error || "Nao foi possivel recuperar.", "warning"); return; }
+            const aluno = { fullName: data.fullName, email: data.email, registeredAt: new Date().toISOString() };
+            StudentManager.setStudent(aluno);
+            if (data.progress && typeof progress !== "undefined" && progress) {
+                Object.assign(progress, data.progress);
+                try { localStorage.setItem('escola_da_fe_progress', JSON.stringify(progress)); } catch (_e) {}
+                if (typeof updateStats === "function") updateStats();
+                if (typeof renderStages === "function") renderStages();
+                if (typeof updateXpBar === "function") updateXpBar();
+                if (typeof updateMissions === "function") updateMissions();
+                StudentManager.updateUi();
+            }
+            closeEnrollmentModal();
+            showToast("Progresso recuperado com sucesso!", "success");
+        } catch (e) {
+            showToast("Erro de conexao ao recuperar.", "warning");
+        }
+    }
+    window.handleRecuperarProgresso = handleRecuperarProgresso;
+
 function handleEnrollmentSubmit(e) {
     e.preventDefault();
     const nameInput = document.getElementById('enrollment-name');
@@ -12517,6 +12625,14 @@ function handleEnrollmentSubmit(e) {
         showToast("Por favor, insira um e-mail válido.", "warning");
         return;
     }
+
+    const guardado = StudentManager.getStudent();
+    if (guardado && guardado.email && String(guardado.email).toLowerCase() !== email.toLowerCase()) {
+        const usarGuardado = confirm('Neste aparelho ja existe progresso com o e-mail ' + guardado.email + '.\n\nOK = entrar com o e-mail que ja tem progresso\nCancelar = continuar com ' + email);
+        if (usarGuardado) { emailInput.value = guardado.email; return; }
+    }
+    const pinDigitado = (document.getElementById("enrollment-pin") ? document.getElementById("enrollment-pin").value : "").trim();
+    if (pinDigitado) window.escolaAlunoPin = pinDigitado;
 
     const student = {
         fullName,
