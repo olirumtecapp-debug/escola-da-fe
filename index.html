@@ -12517,6 +12517,7 @@ const InboxManager = {
                                 <div class="flex items-center justify-between mt-2">
                                     <span class="flex items-center gap-1.5 text-[10px] font-bold ${cor}"><span>✓</span> ${rotulo}</span>
                                     <button onclick="arquivarMensagemAluno('${m.id}')" class="text-[10px] font-bold text-slate-500 hover:text-slate-700 underline">Arquivar</button>
+                                    <button onclick="excluirMensagemAluno('${m.id}')" class="text-[10px] font-bold text-rose-500 hover:text-rose-700 underline ml-2">Excluir</button>
                                 </div>
                             </div>`;
                         }).join('');
@@ -13372,6 +13373,23 @@ window.onload = function() {
             showToast('Erro de conexao ao responder.', 'warning');
         }
     }
+
+    async function excluirMensagemAluno(id) {
+        if (!confirm('Excluir esta conversa da sua caixa?\n\nEla sai da sua lista. A coordenação mantém o registro, então nada do que você escreveu se perde.')) return;
+        try {
+            const res = await fetch('/api/inbox/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, action: 'hide-student' })
+            });
+            const data = await res.json();
+            if (data.ok) { showToast('Conversa excluída da sua caixa.', 'success'); InboxManager.loadInbox(); }
+            else showToast(data.error || 'Não foi possível excluir.', 'warning');
+        } catch (e) {
+            showToast('Erro de conexão ao excluir.', 'warning');
+        }
+    }
+    window.excluirMensagemAluno = excluirMensagemAluno;
 
     async function arquivarMensagemAluno(id) {
         if (!confirm('Arquivar esta conversa? Ela sai da sua lista principal.')) return;
