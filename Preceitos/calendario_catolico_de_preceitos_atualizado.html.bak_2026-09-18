@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário Católico de Preceitos (2026-2030)</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        catholic: {
+                            wine: '#722F37', // Bordô/Vinho
+                            gold: '#D4AF37', // Dourado
+                            cream: '#FDFBF7', // Fundo claro acolhedor
+                            paper: '#F5F0E6',
+                            dark: '#2d3748',
+                            purple: '#6B46C1', // Penitência/Quaresma
+                            red: '#E53E3E', // Preceito
+                            blue: '#3182CE' // Informações/Sextas
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(114, 47, 55, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- React & Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Custom CSS for Print and Scrollbars -->
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #2d3748;
+        }
+        
+        /* Custom Scrollbar for better UX */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FDFBF7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E2E8F0;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #CBD5E1;
+        }
+
+        /* Print Styles */
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; }
+            #calendar-container { box-shadow: none; border: none; }
+            .calendar-grid { gap: 2px !important; background: #ccc; border: 1px solid #ccc;}
+            .calendar-cell { background: white !important; border-radius: 0 !important; }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // --- DATABASE ---
+        // Data structure based exactly on the user's prompt for 2026-2030
+        const PRECEITOS_DATA = [
+            // 2026
+            { date: '2026-01-01', name: 'Santa Maria, Mãe de Deus', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2026-01-04', name: 'Epifania do Senhor', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2026-02-18', name: 'Quarta-feira de Cinzas', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2026-03-19', name: 'São José', type: 'solenidade', desc: 'Solenidade — não é dia de preceito no Brasil.', canon: '' },
+            { date: '2026-04-03', name: 'Sexta-feira Santa', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2026-05-17', name: 'Ascensão do Senhor', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2026-06-04', name: 'Santíssimo Corpo e Sangue de Cristo (Corpus Christi)', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2026-06-28', name: 'São Pedro e São Paulo', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2026-08-16', name: 'Assunção da Bem-Aventurada Virgem Maria', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2026-11-01', name: 'Todos os Santos', type: 'preceito', desc: 'Dia de Preceito; neste ano coincide com domingo', canon: 'Cân. 1246' },
+            { date: '2026-12-08', name: 'Imaculada Conceição', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2026-12-25', name: 'Natal do Senhor', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+
+            // 2027
+            { date: '2027-01-01', name: 'Santa Maria, Mãe de Deus', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2027-01-03', name: 'Epifania do Senhor', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2027-02-10', name: 'Quarta-feira de Cinzas', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2027-03-19', name: 'São José', type: 'solenidade', desc: 'Solenidade — não é dia de preceito no Brasil.', canon: '' },
+            { date: '2027-03-26', name: 'Sexta-feira Santa', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2027-05-09', name: 'Ascensão do Senhor', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2027-05-27', name: 'Santíssimo Corpo e Sangue de Cristo (Corpus Christi)', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2027-06-27', name: 'São Pedro e São Paulo', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2027-08-15', name: 'Assunção da Bem-Aventurada Virgem Maria', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2027-11-07', name: 'Todos os Santos', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2027-12-08', name: 'Imaculada Conceição', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2027-12-25', name: 'Natal do Senhor', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+
+            // 2028
+            { date: '2028-01-01', name: 'Santa Maria, Mãe de Deus', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2028-01-02', name: 'Epifania do Senhor', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2028-03-01', name: 'Quarta-feira de Cinzas', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2028-03-19', name: 'São José', type: 'solenidade', desc: 'Solenidade — não é dia de preceito no Brasil.', canon: '' },
+            { date: '2028-04-14', name: 'Sexta-feira Santa', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2028-05-28', name: 'Ascensão do Senhor', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2028-06-15', name: 'Santíssimo Corpo e Sangue de Cristo (Corpus Christi)', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2028-07-02', name: 'São Pedro e São Paulo', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2028-08-20', name: 'Assunção da Bem-Aventurada Virgem Maria', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2028-11-05', name: 'Todos os Santos', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2028-12-08', name: 'Imaculada Conceição', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2028-12-25', name: 'Natal do Senhor', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+
+            // 2029
+            { date: '2029-01-01', name: 'Santa Maria, Mãe de Deus', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2029-01-07', name: 'Epifania do Senhor', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2029-02-14', name: 'Quarta-feira de Cinzas', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2029-03-19', name: 'São José', type: 'solenidade', desc: 'Solenidade — não é dia de preceito no Brasil.', canon: '' },
+            { date: '2029-03-30', name: 'Sexta-feira Santa', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2029-05-13', name: 'Ascensão do Senhor', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2029-05-31', name: 'Santíssimo Corpo e Sangue de Cristo (Corpus Christi)', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2029-07-01', name: 'São Pedro e São Paulo', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2029-08-19', name: 'Assunção da Bem-Aventurada Virgem Maria', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2029-11-04', name: 'Todos os Santos', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2029-12-08', name: 'Imaculada Conceição', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2029-12-25', name: 'Natal do Senhor', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+
+            // 2030
+            { date: '2030-01-01', name: 'Santa Maria, Mãe de Deus', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2030-01-06', name: 'Epifania do Senhor', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2030-03-06', name: 'Quarta-feira de Cinzas', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2030-03-19', name: 'São José', type: 'solenidade', desc: 'Solenidade — não é dia de preceito no Brasil.', canon: '' },
+            { date: '2030-04-19', name: 'Sexta-feira Santa', type: 'jejum', desc: 'Jejum e Abstinência', canon: 'Cân. 1251' },
+            { date: '2030-06-02', name: 'Ascensão do Senhor', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2030-06-20', name: 'Santíssimo Corpo e Sangue de Cristo (Corpus Christi)', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2030-06-30', name: 'São Pedro e São Paulo', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2030-08-18', name: 'Assunção da Bem-Aventurada Virgem Maria', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2030-11-03', name: 'Todos os Santos', type: 'preceito', desc: 'Dia de Preceito transferido para o domingo', canon: 'Cân. 1246' },
+            { date: '2030-12-08', name: 'Imaculada Conceição', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+            { date: '2030-12-25', name: 'Natal do Senhor', type: 'preceito', desc: 'Dia de Preceito', canon: 'Cân. 1246' },
+        ];
+
+        const CATEGORIES = {
+            'preceito': { color: 'bg-catholic-red text-white', dot: 'bg-catholic-red', label: 'Preceito' },
+            'domingo': { color: 'bg-catholic-wine text-white', dot: 'bg-catholic-wine', label: 'Domingo' },
+            'jejum': { color: 'bg-catholic-purple text-white', dot: 'bg-catholic-purple', label: 'Jejum e Abstinência' },
+            'penitencia': { color: 'bg-catholic-blue text-white', dot: 'bg-catholic-blue', label: 'Dia Penitencial' },
+            'solenidade': { color: 'bg-catholic-gold text-catholic-dark', dot: 'bg-catholic-gold', label: 'Solenidade' },
+        };
+
+        const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+        // Helper: Format Date string YYYY-MM-DD safely considering timezone
+        const formatDateString = (year, month, day) => {
+            return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        };
+
+        // Logic to get all events for a specific day
+        const getEventsForDay = (year, month, day) => {
+            const dateStr = formatDateString(year, month, day);
+            const dateObj = new Date(year, month, day);
+            const dayOfWeek = dateObj.getDay();
+            
+            let events = [];
+
+            // 1. Check database for specific events
+            const specificEvents = PRECEITOS_DATA.filter(e => e.date === dateStr);
+            if (specificEvents.length > 0) {
+                events.push(...specificEvents);
+            }
+
+            // 2. Logic for Sundays
+            if (dayOfWeek === 0) {
+                // Check if there isn't already a specific 'preceito' rule for this Sunday
+                const hasSpecificPreceito = events.some(e => e.type === 'preceito');
+                if (!hasSpecificPreceito) {
+                    events.push({
+                        date: dateStr,
+                        name: 'Domingo',
+                        type: 'domingo',
+                        desc: 'Dia semanal de preceito. A obrigação pode ser satisfeita no sábado à tarde/noite.',
+                        canon: 'Cân. 1246 §1, 1247, 1248'
+                    });
+                }
+            }
+
+            // 3. Logic for Fridays (Penitence)
+            if (dayOfWeek === 5) {
+                // Exceptions: If it's Good Friday (jejum), or a Solemnity (like St. Joseph or Christmas if it falls on Friday)
+                const hasException = events.some(e => e.type === 'solenidade' || e.type === 'jejum' || (e.type === 'preceito' && e.name === 'Natal do Senhor'));
+                
+                if (!hasException) {
+                    events.push({
+                        date: dateStr,
+                        name: 'Sexta-feira',
+                        type: 'penitencia',
+                        desc: 'Dia penitencial. Na Igreja Católica, as sextas-feiras são dias penitenciais, salvo quando coincidem com solenidades.',
+                        canon: 'Cân. 1250, 1251'
+                    });
+                }
+            }
+
+            return events;
+        };
+
+        // --- COMPONENTS ---
+
+        const Header = ({ onNavigate }) => (
+            <header className="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm no-print">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex justify-between items-center h-20">
+                        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>
+                            <div className="w-10 h-10 bg-catholic-wine rounded-full flex items-center justify-center text-white shadow-md">
+                                <i className="ph-fill ph-cross text-xl"></i>
+                            </div>
+                            <div>
+                                <h1 className="font-serif font-bold text-xl text-catholic-wine tracking-tight">Preceitos Católicos</h1>
+                                <p className="text-xs text-gray-500 hidden sm:block">No Brasil (2026-2030)</p>
+                            </div>
+                        </div>
+                        <nav className="hidden md:flex space-x-8">
+                            <a href="#calendario" onClick={onNavigate} className="text-gray-600 hover:text-catholic-wine font-medium text-sm transition-colors">Calendário</a>
+                            <a href="#obrigacoes" onClick={onNavigate} className="text-gray-600 hover:text-catholic-wine font-medium text-sm transition-colors">Obrigações</a>
+                            <a href="#fontes" onClick={onNavigate} className="text-gray-600 hover:text-catholic-wine font-medium text-sm transition-colors">Fontes</a>
+                        </nav>
+                        <div className="md:hidden">
+                            <button className="text-gray-600 hover:text-catholic-wine p-2">
+                                <i className="ph ph-list text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        );
+
+        const Hero = ({ selectedYear, onYearChange }) => (
+            <section className="bg-catholic-cream border-b border-gray-200 overflow-hidden relative no-print">
+                {/* Decorative background element */}
+                <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-catholic-gold opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative z-10 text-center">
+                    <span className="text-catholic-wine font-semibold text-sm tracking-wider uppercase mb-4 block">Formação & Consulta</span>
+                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-gray-900 mb-6 leading-tight">
+                        Conheça e viva os <br className="hidden sm:block" /> 
+                        <span className="text-catholic-wine">preceitos da Igreja.</span>
+                    </h2>
+                    <p className="max-w-2xl mx-auto text-lg text-gray-600 mb-10">
+                        Consulte de forma simples e rápida os dias de preceito, jejum, abstinência e penitência aplicáveis no Brasil.
+                    </p>
+                    
+                    <div className="inline-flex flex-col items-center bg-white p-3 rounded-2xl shadow-soft border border-gray-100">
+                        <span className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-widest">Selecione o Ano</span>
+                        <div className="flex flex-wrap justify-center gap-2">
+                            {[2026, 2027, 2028, 2029, 2030].map(year => (
+                                <button 
+                                    key={year}
+                                    onClick={() => onYearChange(year)}
+                                    className={`px-5 py-2 rounded-xl font-medium text-sm transition-all duration-200 ${selectedYear === year ? 'bg-catholic-wine text-white shadow-md' : 'bg-gray-50 text-gray-600 hover:bg-gray-100'}`}
+                                >
+                                    {year}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                    
+                    <p className="mt-8 text-xs text-gray-400 max-w-lg mx-auto italic flex items-center justify-center gap-2">
+                        <i className="ph ph-info"></i>
+                        Em situações particulares, siga as orientações da sua paróquia e diocese.
+                    </p>
+                </div>
+            </section>
+        );
+
+        const SummaryCards = () => {
+            const cards = [
+                { icon: 'ph-church', title: 'Dias de Preceito', desc: 'Dias em que existe a grave obrigação de participação na Santa Missa.', color: 'text-catholic-red', bg: 'bg-red-50' },
+                { icon: 'ph-hands-praying', title: 'Domingos', desc: 'O domingo é o principal dia semanal de preceito em toda a Igreja.', color: 'text-catholic-wine', bg: 'bg-pink-50' },
+                { icon: 'ph-bread', title: 'Jejum e Abstinência', desc: 'Obrigatórios na Quarta-feira de Cinzas e na Sexta-feira Santa.', color: 'text-catholic-purple', bg: 'bg-purple-50' },
+                { icon: 'ph-plant', title: 'Dias Penitenciais', desc: 'Sextas-feiras do ano, observadas as exceções previstas.', color: 'text-catholic-blue', bg: 'bg-blue-50' },
+            ];
+
+            return (
+                <section className="py-12 bg-white no-print">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {cards.map((card, idx) => (
+                                <div key={idx} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-soft hover:shadow-md transition-shadow">
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${card.bg}`}>
+                                        <i className={`ph ${card.icon} text-2xl ${card.color}`}></i>
+                                    </div>
+                                    <h3 className="font-serif font-bold text-lg text-gray-900 mb-2">{card.title}</h3>
+                                    <p className="text-sm text-gray-600 leading-relaxed">{card.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        const EventModal = ({ eventData, date, onClose }) => {
+            if (!eventData || eventData.length === 0) return null;
+
+            // Group multiple events nicely if they exist
+            const formattedDate = new Date(date.year, date.month, date.day).toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            return (
+                <div className="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-0 no-print">
+                    <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={onClose}></div>
+                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden relative z-10 transform transition-all">
+                        <div className="p-6 sm:p-8">
+                            <div className="flex justify-between items-start mb-6">
+                                <div>
+                                    <p className="text-sm font-medium text-gray-500 capitalize">{formattedDate}</p>
+                                </div>
+                                <button onClick={onClose} className="text-gray-400 hover:text-gray-600 bg-gray-50 rounded-full p-2 transition-colors">
+                                    <i className="ph ph-x text-lg"></i>
+                                </button>
+                            </div>
+
+                            <div className="space-y-6">
+                                {eventData.map((ev, idx) => {
+                                    const cat = CATEGORIES[ev.type];
+                                    return (
+                                        <div key={idx} className="border-l-4 pl-4" style={{borderColor: cat.dot.replace('bg-', '')}}>
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${cat.color}`}>
+                                                    {cat.label}
+                                                </span>
+                                            </div>
+                                            <h3 className="font-serif text-2xl font-bold text-gray-900 mb-2">{ev.name}</h3>
+                                            <p className="text-gray-700 text-sm leading-relaxed mb-3">
+                                                <strong className="font-semibold">Obrigação/Prática:</strong> {ev.desc}
+                                            </p>
+
+                                            <div className="bg-catholic-cream/70 rounded-2xl p-4 sm:p-5 border border-gray-100 mb-4">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <i className="ph-fill ph-info text-catholic-wine"></i>
+                                                    <strong className="text-sm text-gray-900">O que isso significa?</strong>
+                                                </div>
+                                                <p className="text-sm text-gray-600 leading-relaxed">
+                                                    {ev.type === 'domingo' && 'O domingo é o principal dia semanal de preceito. O fiel deve participar da Santa Missa e procurar guardar o Dia do Senhor, inclusive com o devido repouso.'}
+                                                    {ev.type === 'preceito' && 'Este é um dia de preceito indicado no calendário. A obrigação principal é participar da Santa Missa, conforme a disciplina da Igreja aplicável no Brasil.'}
+                                                    {ev.type === 'jejum' && 'É um dia de especial penitência, no qual se observam as práticas de jejum e abstinência para os fiéis obrigados.'}
+                                                    {ev.type === 'penitencia' && 'A sexta-feira é um dia penitencial. No Brasil, a abstinência de carne nas sextas-feiras pode ser substituída pelas formas de penitência indicadas na seção de explicações.'}
+                                                    {ev.type === 'solenidade' && 'É uma celebração litúrgica de grande importância. Uma solenidade, porém, não é automaticamente um dia de preceito no Brasil.'}
+                                                </p>
+                                            </div>
+                                            
+                                            {ev.type === 'jejum' && (
+                                                <div className="bg-gray-50 rounded-xl p-4 mt-4 text-sm text-gray-600 border border-gray-100">
+                                                    <p className="mb-2"><strong className="text-gray-800">Abstinência (Carne):</strong> Obriga a partir dos 14 anos completos.</p>
+                                                    <p><strong className="text-gray-800">Jejum:</strong> Obriga dos 18 aos 59 anos completos.</p>
+                                                    <p className="text-xs mt-3 italic text-gray-500">Pessoas doentes estão dispensadas quando a saúde impedir.</p>
+                                                </div>
+                                            )}
+
+                                            {ev.canon && (
+                                                <div className="mt-3 flex items-center gap-1.5 text-xs text-gray-400 font-medium">
+                                                    <i className="ph ph-book-open"></i>
+                                                    {ev.canon}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-end">
+                            <button onClick={onClose} className="px-6 py-2 bg-white border border-gray-200 text-gray-700 font-medium text-sm rounded-xl hover:bg-gray-50 transition-colors">
+                                Fechar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Calendar = ({ year }) => {
+            const [currentMonth, setCurrentMonth] = React.useState(new Date().getMonth());
+            const [currentYear, setCurrentYear] = React.useState(year);
+            const [filter, setFilter] = React.useState('all');
+            const [selectedDateEvents, setSelectedDateEvents] = React.useState(null);
+
+            // Sync year if prop changes from Hero
+            React.useEffect(() => {
+                if(year >= 2026 && year <= 2030) {
+                    setCurrentYear(year);
+                }
+            }, [year]);
+
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+            const nextMonth = () => {
+                if (currentMonth === 11) {
+                    if (currentYear < 2030) { setCurrentMonth(0); setCurrentYear(currentYear + 1); }
+                } else { setCurrentMonth(currentMonth + 1); }
+            };
+
+            const prevMonth = () => {
+                if (currentMonth === 0) {
+                    if (currentYear > 2026) { setCurrentMonth(11); setCurrentYear(currentYear - 1); }
+                } else { setCurrentMonth(currentMonth - 1); }
+            };
+
+            const goToToday = () => {
+                const today = new Date();
+                if(today.getFullYear() >= 2026 && today.getFullYear() <= 2030) {
+                    setCurrentYear(today.getFullYear());
+                    setCurrentMonth(today.getMonth());
+                } else {
+                    // Fallback to beginning of 2026 if today is outside range
+                    setCurrentYear(2026);
+                    setCurrentMonth(0);
+                }
+            };
+
+            const findNextPreceito = () => {
+                let startD = new Date();
+                if(startD.getFullYear() < 2026) startD = new Date(2026, 0, 1);
+                if(startD.getFullYear() > 2030) return; // out of bounds
+
+                let current = startD;
+                while(current.getFullYear() <= 2030) {
+                    current.setDate(current.getDate() + 1);
+                    const events = getEventsForDay(current.getFullYear(), current.getMonth(), current.getDate());
+                    if(events.some(e => e.type === 'preceito' || e.type === 'domingo')) {
+                        setCurrentYear(current.getFullYear());
+                        setCurrentMonth(current.getMonth());
+                        setSelectedDateEvents({
+                            date: { year: current.getFullYear(), month: current.getMonth(), day: current.getDate() },
+                            events: events
+                        });
+                        break;
+                    }
+                }
+            };
+
+            // Generate Calendar Grid
+            const renderGrid = () => {
+                let grid = [];
+                // Empty cells before start of month
+                for (let i = 0; i < firstDayOfMonth; i++) {
+                    grid.push(<div key={`empty-${i}`} className="p-2 sm:p-4 min-h-[100px] bg-gray-50/50 border border-gray-100 hidden sm:block"></div>);
+                }
+
+                // Days
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const events = getEventsForDay(currentYear, currentMonth, day);
+                    
+                    // Filtering
+                    const visibleEvents = filter === 'all' ? events : events.filter(e => e.type === filter || (filter === 'preceito' && e.type === 'domingo'));
+                    
+                    const isToday = new Date().toDateString() === new Date(currentYear, currentMonth, day).toDateString();
+                    
+                    // Determine dominant color for border (Preceito > Jejum > Solenidade > Penitencia)
+                    let borderClass = 'border-gray-100';
+                    let bgClass = 'bg-white';
+                    
+                    if (visibleEvents.length > 0) {
+                        if (visibleEvents.some(e => e.type === 'preceito')) { borderClass = 'border-catholic-red'; bgClass = 'bg-red-50/30'; }
+                        else if (visibleEvents.some(e => e.type === 'domingo')) { borderClass = 'border-catholic-wine'; bgClass = 'bg-pink-50/30'; }
+                        else if (visibleEvents.some(e => e.type === 'jejum')) { borderClass = 'border-catholic-purple'; bgClass = 'bg-purple-50/30'; }
+                        else if (visibleEvents.some(e => e.type === 'solenidade')) { borderClass = 'border-catholic-gold'; bgClass = 'bg-yellow-50/30'; }
+                        else if (visibleEvents.some(e => e.type === 'penitencia')) { borderClass = 'border-catholic-blue/30'; bgClass = 'bg-blue-50/20'; }
+                    }
+
+                    grid.push(
+                        <div 
+                            key={`day-${day}`} 
+                            onClick={() => visibleEvents.length > 0 && setSelectedDateEvents({date: {year: currentYear, month: currentMonth, day}, events: visibleEvents})}
+                            className={`calendar-cell p-2 sm:p-3 min-h-[100px] sm:min-h-[120px] border relative transition-all duration-200 
+                                ${bgClass} ${borderClass} 
+                                ${visibleEvents.length > 0 ? 'cursor-pointer hover:shadow-md hover:z-10' : ''}
+                                ${isToday ? 'ring-2 ring-catholic-wine ring-inset' : ''}
+                                rounded-lg sm:rounded-none mb-2 sm:mb-0
+                            `}
+                        >
+                            <div className="flex justify-between items-start">
+                                <span className={`font-semibold text-sm sm:text-base ${isToday ? 'text-catholic-wine bg-pink-100 w-7 h-7 flex items-center justify-center rounded-full' : 'text-gray-700'}`}>
+                                    {day}
+                                </span>
+                                {/* Mobile view day name */}
+                                <span className="sm:hidden text-xs text-gray-400 font-medium uppercase">{WEEKDAYS[new Date(currentYear, currentMonth, day).getDay()]}</span>
+                            </div>
+                            
+                            <div className="mt-2 space-y-1.5 flex flex-col items-start w-full">
+                                {visibleEvents.map((ev, idx) => (
+                                    <div key={idx} className="flex items-center gap-1.5 w-full">
+                                        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${CATEGORIES[ev.type].dot}`}></div>
+                                        <span className={`text-[10px] sm:text-xs font-medium truncate w-full ${CATEGORIES[ev.type].color.replace('bg-', 'text-').replace('text-white', '')} ${ev.type === 'domingo' ? 'text-catholic-wine' : ''} ${ev.type === 'preceito' ? 'text-catholic-red' : ''}`}>
+                                            {ev.name}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    );
+                }
+                return grid;
+            };
+
+            return (
+                <section id="calendario" className="py-8 sm:py-16 bg-catholic-paper">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        
+                        {/* Calendar Header & Controls */}
+                        <div className="bg-white rounded-t-3xl p-6 sm:p-8 border-b border-gray-100 shadow-sm flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                            <div>
+                                <h2 className="text-3xl font-serif font-bold text-gray-900 capitalize flex items-center gap-3">
+                                    {MONTHS[currentMonth]} <span className="text-gray-400 font-light">|</span> <span className="text-catholic-wine">{currentYear}</span>
+                                </h2>
+                                <p className="text-sm text-gray-500 mt-1">Selecione uma data para ver os detalhes litúrgicos.</p>
+                            </div>
+                            
+                            <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                                <button onClick={goToToday} className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">Hoje</button>
+                                <button onClick={findNextPreceito} className="px-4 py-2 text-sm font-medium text-white bg-catholic-wine rounded-xl shadow-sm hover:bg-catholic-wine/90 transition-colors flex items-center gap-2">
+                                    <i className="ph ph-calendar-check"></i> Próximo Preceito
+                                </button>
+                                <div className="flex items-center bg-gray-50 rounded-xl p-1 ml-auto lg:ml-0">
+                                    <button onClick={prevMonth} disabled={currentYear === 2026 && currentMonth === 0} className="p-2 text-gray-600 hover:text-catholic-wine disabled:opacity-30 rounded-lg"><i className="ph-bold ph-caret-left"></i></button>
+                                    <span className="px-3 text-sm font-medium w-24 text-center">{MONTHS[currentMonth].substring(0,3)} {currentYear}</span>
+                                    <button onClick={nextMonth} disabled={currentYear === 2030 && currentMonth === 11} className="p-2 text-gray-600 hover:text-catholic-wine disabled:opacity-30 rounded-lg"><i className="ph-bold ph-caret-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Filters */}
+                        <div className="bg-white px-6 py-4 border-b border-gray-100 overflow-x-auto no-print">
+                            <div className="flex gap-2 min-w-max">
+                                <button onClick={() => setFilter('all')} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${filter === 'all' ? 'bg-gray-800 text-white shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>Todos</button>
+                                {Object.keys(CATEGORIES).map(cat => (
+                                    <button key={cat} onClick={() => setFilter(cat)} className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${filter === cat ? CATEGORIES[cat].color + ' shadow-sm' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                                        <div className={`w-2 h-2 rounded-full ${CATEGORIES[cat].dot}`}></div>
+                                        {CATEGORIES[cat].label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Calendar Grid Container */}
+                        <div id="calendar-container" className="bg-white rounded-b-3xl shadow-soft overflow-hidden p-4 sm:p-6 lg:p-8">
+                            {/* Days of week header (Desktop only) */}
+                            <div className="hidden sm:grid grid-cols-7 gap-px mb-2 text-center">
+                                {WEEKDAYS.map((day, idx) => (
+                                    <div key={day} className={`text-xs font-bold uppercase tracking-wider py-2 ${idx === 0 ? 'text-catholic-wine' : 'text-gray-400'}`}>{day}</div>
+                                ))}
+                            </div>
+                            
+                            {/* The Grid */}
+                            <div className="flex flex-col sm:grid sm:grid-cols-7 calendar-grid sm:border sm:border-gray-100 sm:bg-gray-100 sm:gap-[1px] sm:rounded-xl overflow-hidden">
+                                {renderGrid()}
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex justify-end no-print">
+                            <button onClick={() => window.print()} className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-catholic-wine font-medium">
+                                <i className="ph ph-printer"></i> Imprimir Mês
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Render Modal if date is selected */}
+                    {selectedDateEvents && (
+                        <EventModal 
+                            eventData={selectedDateEvents.events} 
+                            date={selectedDateEvents.date} 
+                            onClose={() => setSelectedDateEvents(null)} 
+                        />
+                    )}
+                </section>
+            );
+        };
+
+        const Explanations = () => (
+            <section id="obrigacoes" className="py-16 sm:py-24 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="text-center mb-12 sm:mb-16">
+                        <span className="text-catholic-wine font-semibold text-sm tracking-wider uppercase">Formação & Consulta</span>
+                        <h2 className="text-3xl sm:text-4xl font-serif font-bold text-gray-900 mt-3 mb-4">Quais são minhas obrigações?</h2>
+                        <p className="text-gray-600 max-w-3xl mx-auto leading-relaxed">Compreenda de forma simples o que cada marcação do calendário significa e como as principais obrigações são apresentadas.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                        <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-100 hover:shadow-soft transition-shadow">
+                            <h3 className="font-serif text-xl font-bold text-catholic-wine mb-3 flex items-center gap-2">
+                                <i className="ph-fill ph-hands-praying"></i> Domingos e Dias de Preceito
+                            </h3>
+                            <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                                A principal obrigação é <strong>participar da Santa Missa</strong> e abster-se do trabalho e de negócios que impeçam o culto a Deus, a alegria do dia do Senhor e o devido repouso mental e físico.
+                            </p>
+                            <div className="bg-white rounded-xl p-4 border border-gray-100">
+                                <p className="text-gray-600 text-xs leading-relaxed">
+                                    <strong className="text-gray-800">Quando cumprir:</strong> a obrigação da Missa pode ser cumprida no próprio dia ou na tarde/noite do dia anterior.
+                                </p>
+                            </div>
+                            <p className="text-gray-400 text-xs italic mt-4">Cân. 1246 §1, 1247 e 1248</p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-100 hover:shadow-soft transition-shadow">
+                            <h3 className="font-serif text-xl font-bold text-catholic-purple mb-3 flex items-center gap-2">
+                                <i className="ph-fill ph-bread"></i> Jejum e Abstinência
+                            </h3>
+                            <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                                São destacados neste calendário a <strong>Quarta-feira de Cinzas</strong> e a <strong>Sexta-feira Santa</strong>.
+                            </p>
+                            <div className="space-y-3 text-sm text-gray-700">
+                                <div className="bg-white rounded-xl p-4 border border-gray-100">
+                                    <strong className="text-gray-900">Abstinência:</strong> não comer carne de animais de sangue quente.
+                                    <div className="text-xs text-gray-500 mt-1">Obrigação a partir dos 14 anos completos.</div>
+                                </div>
+                                <div className="bg-white rounded-xl p-4 border border-gray-100">
+                                    <strong className="text-gray-900">Jejum:</strong> uma refeição completa no dia, com duas pequenas colações permitidas.
+                                    <div className="text-xs text-gray-500 mt-1">Obrigação dos 18 aos 59 anos completos.</div>
+                                </div>
+                            </div>
+                            <p className="text-gray-400 text-xs italic mt-4">Cân. 1251</p>
+                        </div>
+
+                        <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 border border-gray-100 hover:shadow-soft transition-shadow">
+                            <h3 className="font-serif text-xl font-bold text-catholic-blue mb-3 flex items-center gap-2">
+                                <i className="ph-fill ph-plant"></i> Dias Penitenciais — Sextas-feiras
+                            </h3>
+                            <p className="text-gray-700 text-sm leading-relaxed mb-4">
+                                Toda sexta-feira do ano é dia de penitência. No Brasil, a abstinência de carne nas sextas-feiras pode ser substituída por práticas como:
+                            </p>
+                            <div className="space-y-2 text-sm text-gray-700">
+                                <div className="flex items-start gap-2"><i className="ph-fill ph-check-circle text-catholic-blue mt-0.5"></i><span>Outra prática de piedade.</span></div>
+                                <div className="flex items-start gap-2"><i className="ph-fill ph-check-circle text-catholic-blue mt-0.5"></i><span>Obras de caridade.</span></div>
+                                <div className="flex items-start gap-2"><i className="ph-fill ph-check-circle text-catholic-blue mt-0.5"></i><span>Abstenção de outra comida ou bebida.</span></div>
+                            </div>
+                            <p className="text-gray-500 text-xs italic mt-4">Não se aplica se a sexta coincidir com uma Solenidade.</p>
+                            <p className="text-gray-400 text-xs italic mt-2">Cân. 1250 e 1251</p>
+                        </div>
+                    </div>
+
+                    <div className="mt-10 sm:mt-14">
+                        <div className="text-center mb-8">
+                            <h3 className="text-2xl font-serif font-bold text-gray-900 mb-2">Entenda as categorias do calendário</h3>
+                            <p className="text-gray-600 text-sm">Use as cores e os símbolos para identificar rapidamente o tipo de observância.</p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                            {[
+                                {type:'preceito', title:'Preceito', text:'Dia marcado como preceito no calendário.'},
+                                {type:'domingo', title:'Domingo', text:'Principal dia semanal de preceito.'},
+                                {type:'jejum', title:'Jejum e Abstinência', text:'Indica especialmente os dias de jejum e abstinência destacados no calendário.'},
+                                {type:'penitencia', title:'Dia Penitencial', text:'Identifica as sextas-feiras penitenciais, observadas as exceções.'},
+                                {type:'solenidade', title:'Solenidade', text:'Celebração litúrgica de grande importância; não é automaticamente dia de preceito no Brasil.'}
+                            ].map((item) => (
+                                <div key={item.type} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-soft">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className={`w-3 h-3 rounded-full ${CATEGORIES[item.type].dot}`}></span>
+                                        <strong className="text-sm text-gray-900">{item.title}</strong>
+                                    </div>
+                                    <p className="text-xs text-gray-500 leading-relaxed">{item.text}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="rounded-2xl border border-gray-100 bg-catholic-cream p-6 sm:p-8">
+                            <h3 className="font-serif text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i className="ph-fill ph-compass text-catholic-wine"></i> Como observar esses dias na prática?
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {[
+                                    ['Santa Missa','Participe da celebração eucarística no domingo ou dia de preceito.'],
+                                    ['Oração','Reserve tempo para oração, ação de graças e reflexão espiritual.'],
+                                    ['Repouso','Procure evitar atividades que impeçam o culto a Deus e o devido descanso.'],
+                                    ['Penitência','Nos dias penitenciais, pratique a penitência conforme a disciplina indicada.'],
+                                ].map(([title,text], idx) => (
+                                    <div key={idx} className="bg-white/80 rounded-xl p-4 border border-white">
+                                        <strong className="block text-sm text-gray-900 mb-1">{title}</strong>
+                                        <p className="text-xs text-gray-600 leading-relaxed">{text}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="rounded-2xl border border-red-100 bg-red-50 p-6">
+                                <h3 className="font-serif text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                    <i className="ph-fill ph-warning text-catholic-red"></i> Atenção: não é feriado civil
+                                </h3>
+                                <p className="text-sm text-gray-700 leading-relaxed">Dia de preceito religioso não significa necessariamente feriado civil. São conceitos diferentes e devem ser consultados separadamente.</p>
+                            </div>
+                            <div className="rounded-2xl border border-gray-100 bg-gray-50 p-6">
+                                <h3 className="font-serif text-lg font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                    <i className="ph-fill ph-church text-catholic-wine"></i> Em caso de dúvida
+                                </h3>
+                                <p className="text-sm text-gray-600 leading-relaxed">Em situações particulares, dificuldades pessoais, impedimentos ou dúvidas sobre a aplicação da disciplina, procure a orientação de seu pároco ou da autoridade eclesiástica competente.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        const Footer = () => (
+            <>
+                <section id="fontes" className="py-16 bg-catholic-dark text-white">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <h2 className="text-3xl font-serif font-bold mb-4 text-catholic-gold">Fontes e Fundamentação</h2>
+                                <p className="text-gray-300 text-sm leading-relaxed mb-6">
+                                    Este calendário foi elaborado com base nas normas universais da Igreja e na legislação complementar da Conferência Nacional dos Bispos do Brasil (CNBB).
+                                </p>
+                                <div className="space-y-3">
+                                    <div className="flex items-start gap-3">
+                                        <i className="ph ph-check-circle text-catholic-gold mt-1"></i>
+                                        <div>
+                                            <strong className="block text-sm">Código de Direito Canônico</strong>
+                                            <span className="text-xs text-gray-400">Cânones 1244 a 1253 (Dias festivos e dias de penitência).</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3">
+                                        <i className="ph ph-check-circle text-catholic-gold mt-1"></i>
+                                        <div>
+                                            <strong className="block text-sm">Legislação Complementar da CNBB</strong>
+                                            <span className="text-xs text-gray-400">Decretos relativos aos preceitos transferidos para domingo e formas de penitência.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white/5 p-6 sm:p-8 rounded-2xl border border-white/10 relative">
+                                <i className="ph-fill ph-quotes text-5xl text-white/10 absolute top-4 right-4"></i>
+                                <p className="font-serif italic text-lg leading-relaxed text-gray-200">
+                                    "O domingo, dia em que por tradição apostólica se celebra o mistério pascal, deve ser guardado em toda a Igreja como o primordial dia festivo de preceito."
+                                </p>
+                                <span className="block mt-4 text-xs font-bold tracking-wider text-catholic-gold uppercase">Cân. 1246 §1</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <footer className="bg-black py-8">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        <div className="flex justify-center items-center gap-2 text-white/50 mb-4">
+                            <i className="ph-fill ph-cross"></i>
+                        </div>
+                        <p className="text-xs text-gray-500 max-w-3xl mx-auto leading-relaxed">
+                            <strong className="text-gray-400">Nota Importante:</strong> Esta ferramenta web tem finalidade informativa e catequética. 
+                            O aplicativo não substitui a orientação pastoral. Lembre-se que dia de preceito religioso não significa 
+                            necessariamente feriado civil. Normas particulares da diocese, orientações pastorais e situações pessoais 
+                            específicas (como motivo grave ou dispensa) devem ser verificadas com o seu pároco ou autoridade eclesiástica competente.
+                        </p>
+                        <p className="text-xs text-gray-600 mt-6">
+                            © {new Date().getFullYear()} Calendário Católico de Preceitos. Desenvolvido para auxílio dos fiéis.
+                        </p>
+                    </div>
+                </footer>
+            </>
+        );
+
+        const App = () => {
+            const [selectedYear, setSelectedYear] = React.useState(2026);
+
+            const handleNavigate = (e) => {
+                e.preventDefault();
+                const targetId = e.currentTarget.getAttribute('href').substring(1);
+                const element = document.getElementById(targetId);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col font-sans">
+                    <Header onNavigate={handleNavigate} />
+                    <main className="flex-grow">
+                        <Hero selectedYear={selectedYear} onYearChange={setSelectedYear} />
+                        <SummaryCards />
+                        <Calendar year={selectedYear} />
+                        <Explanations />
+                    </main>
+                    <Footer />
+                </div>
+            );
+        };
+
+        // Render Application
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

@@ -362,6 +362,30 @@ const server = http.createServer(async (req, res) => {
         return sendJson(res, 200, { ok: true, message: 'Status resetado com sucesso!' });
     }
 
+    // 9. Carregar Progresso do Aluno por E-mail (sync cross-device)
+    if (pathname === '/api/student/load' && req.method === 'GET') {
+        const email = (searchParams.get('email') || '').trim().toLowerCase();
+        if (!email) {
+            return sendJson(res, 400, { ok: false, error: 'E-mail não informado.' });
+        }
+        const db = readJson(STUDENTS_FILE, { _meta: {}, students: {} });
+        const student = db.students[email];
+        if (!student) {
+            return sendJson(res, 200, { ok: false, message: 'Aluno não encontrado.' });
+        }
+        // Atualiza último acesso
+        db.students[email].lastActiveAt = new Date().toISOString();
+        writeJson(STUDENTS_FILE, db);
+        return sendJson(res, 200, {
+            ok: true,
+            fullName: student.fullName,
+            email: student.email,
+            progress: student.progress || {},
+            registeredAt: student.registeredAt,
+            lastActiveAt: student.lastActiveAt
+        });
+    }
+
     // Arquivos Estáticos & Áudio MP3
     let safePath = pathname;
     if (safePath === '/' || safePath === '') safePath = '/escola_da_f.html';

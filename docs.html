@@ -1,0 +1,295 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escola da Fe - Documentacao Tecnica</title>
+<script src="https://cdn.tailwindcss.com"><\/script>
+<style>
+body { font-family: 'Inter', sans-serif; }
+.card-hover { transition: all 0.2s ease; }
+.card-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+.copy-btn { transition: all 0.15s ease; }
+.copy-btn.copied { background: #10b981 !important; color: white !important; }
+.tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 8px; border-radius: 9999px; }
+</style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+<header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black text-lg">+</div>
+      <div>
+        <h1 class="text-base font-bold text-white leading-none">Escola da Fe</h1>
+        <p class="text-xs text-slate-400 mt-0.5">Documentacao Tecnica do Projeto</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="tag bg-emerald-900 text-emerald-400 border border-emerald-800">LIVE</span>
+      <a href="https://escoladafe.vercel.app" target="_blank" class="text-xs text-amber-400 hover:text-amber-300 font-medium">escoladafe.vercel.app</a>
+    </div>
+  </div>
+</header>
+<section class="max-w-7xl mx-auto px-6 pt-10 pb-6">
+  <div class="bg-amber-950 border border-amber-800 rounded-2xl p-6">
+    <h2 class="text-lg font-bold text-amber-400 mb-2">Como usar esta pagina</h2>
+    <p class="text-sm text-slate-300 leading-relaxed">Cada card documenta um processo do projeto. Clique em <strong class="text-amber-400">Copiar Prompt</strong> e cole no chat da IA para acionar aquela funcionalidade sem precisar explicar nada.</p>
+  </div>
+</section>
+<main class="max-w-7xl mx-auto px-6 pb-16 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="cards"></main>
+<footer class="border-t border-slate-800 bg-slate-900 py-6">
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    <p class="text-xs text-slate-500">Escola da Fe 2026 - Documentacao Interna</p>
+    <a href="/escola_da_f.html" class="text-xs text-slate-500 hover:text-amber-400">Voltar ao Site</a>
+  </div>
+</footer>
+<script>
+const processes = [
+  {
+    icon:"DEPLOY",color:"bg-blue-900 border-blue-800",btnColor:"bg-blue-600 hover:bg-blue-500",tag:"Infra",tagClass:"bg-blue-900 text-blue-400 border-blue-800",
+    title:"Deploy no Vercel",desc:"Publicar nova versao em producao",
+    info:[["Token","<TOKEN_VERCEL>"],["Projeto","prj_CMaoLFP2n8sVPKdMRfeQnnWN4nSC"],["GitHub Repo ID","1370341188"],["Branch","main"],["Alias","escoladafe.vercel.app"]],
+    note:"Sempre copiar escola_da_f.html para index.html antes do commit.",
+    prompt:`Faca o commit e deploy do projeto Escola da Fe para producao no Vercel via GitHub.
+
+PROJETO LOCAL: D:\\EscolaDaFe
+PASSO OBRIGATORIO: Antes do commit, copiar: Copy-Item "D:\\EscolaDaFe\\escola_da_f.html" "D:\\EscolaDaFe\\index.html" -Force
+
+GIT (executavel exato): C:\\Program Files\\Verdent\\resources\\app.asar.unpacked\\node_modules\\dugite\\git\\cmd\\git.exe
+
+GITHUB:
+- Conta: olirumtecapp-debug
+- Token: <TOKEN_GITHUB>
+- Branch: main
+
+VERCEL:
+- Token: <TOKEN_VERCEL>
+- POST https://api.vercel.com/v13/deployments
+- Body: {"name":"escola-da-fe","gitSource":{"type":"github","repoId":1370341188,"ref":"main"},"target":"production"}
+- Alias: POST https://api.vercel.com/v2/deployments/{id}/aliases com {"alias":"escoladafe.vercel.app"}`
+  },
+  {
+    icon:"GIT",color:"bg-purple-900 border-purple-800",btnColor:"bg-purple-600 hover:bg-purple-500",tag:"Git",tagClass:"bg-purple-900 text-purple-400 border-purple-800",
+    title:"Git Push (so commit)",desc:"Salvar codigo no GitHub sem deploy",
+    info:[["Git path","C:\\...\\dugite\\git\\cmd\\git.exe"],["Token","<TOKEN_GITHUB>"],["Conta","olirumtecapp-debug"],["Branch","main"]],
+    note:"git push pode retornar stderr no PowerShell mas funciona - confirmar pelo exit code 0.",
+    prompt:`Faca commit e push do projeto Escola da Fe para o GitHub sem deploy no Vercel.
+
+PROJETO LOCAL: D:\\EscolaDaFe
+PASSO OBRIGATORIO: Copy-Item "D:\\EscolaDaFe\\escola_da_f.html" "D:\\EscolaDaFe\\index.html" -Force
+
+SEQUENCIA POWERSHELL:
+\$git = 'C:\\Program Files\\Verdent\\resources\\app.asar.unpacked\\node_modules\\dugite\\git\\cmd\\git.exe'
+& \$git -C "D:\\EscolaDaFe" add -A
+& \$git -C "D:\\EscolaDaFe" commit -m "MENSAGEM"
+\$token = '<TOKEN_GITHUB>'
+\$b64 = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("olirumtecapp-debug:\$token"))
+& \$git -C "D:\\EscolaDaFe" -c "credential.helper=" -c "http.extraHeader=Authorization: Basic \$b64" push origin main 2>&1`
+  },
+  {
+    icon:"SYNC",color:"bg-emerald-900 border-emerald-800",btnColor:"bg-emerald-600 hover:bg-emerald-500",tag:"Sync",tagClass:"bg-emerald-900 text-emerald-400 border-emerald-800",
+    title:"Sync Cross-Device",desc:"Progresso sincronizado entre dispositivos",
+    info:[["Save","POST /api/student/sync"],["Load","GET /api/student/load?email="],["Register","POST /api/student/register"],["Merge","usa progresso com maior XP/modulos"]],
+    note:"saveProgress() envia ao servidor. restoreProgressFromServer() restaura no login em novo dispositivo.",
+    prompt:`Verifique e corrija a sincronizacao cross-device do progresso no projeto Escola da Fe.
+
+PROBLEMA: Progresso nao sincroniza entre dispositivos diferentes.
+
+COMO FUNCIONA:
+- saveProgress() (linha ~1477 do escola_da_f.html) salva no localStorage E faz POST /api/student/sync
+- checkEnrollmentOnStart() quando logado chama restoreProgressFromServer()
+- restoreProgressFromServer() faz GET /api/student/load?email= e usa o progresso com maior XP/modulos
+
+ENDPOINTS:
+- GET /api/student/load?email=EMAIL -> retorna {ok, progress, fullName, email}
+- POST /api/student/sync -> body {email, progress}
+- POST /api/student/register -> body {fullName, email, progress}
+
+DADOS EM: D:\\EscolaDaFe\\data\\students.json
+ARQUIVO: D:\\EscolaDaFe\\escola_da_f.html (13000+ linhas)`
+  },
+  {
+    icon:"INBOX",color:"bg-amber-900 border-amber-800",btnColor:"bg-amber-600 hover:bg-amber-500",tag:"Inbox",tagClass:"bg-amber-900 text-amber-400 border-amber-800",
+    title:"Caixa Postal / Inbox",desc:"Comunicados e mensagens dos alunos",
+    info:[["Listar","GET /api/inbox/list?email="],["Enviar","POST /api/inbox/send"],["Boas-vindas","localStorage 'escola_da_fe_welcome_msgs'"]],
+    note:"InboxManager (~linha 12373): loadInbox() mescla mensagens do servidor com boas-vindas locais.",
+    prompt:`Verifique e corrija o sistema de caixa postal do projeto Escola da Fe.
+
+ARQUIVO: D:\\EscolaDaFe\\escola_da_f.html
+SERVIDOR: D:\\EscolaDaFe\\server.mjs
+DADOS: D:\\EscolaDaFe\\data\\inbox.json
+
+COMO FUNCIONA:
+- InboxManager (~linha 12373): loadInbox() faz GET /api/inbox/list?email=EMAIL
+- Retorna {broadcasts, userMessages}
+- Mescla com mensagens locais de boas-vindas (localStorage 'escola_da_fe_welcome_msgs')
+- Boas-vindas salvas quando aluno se matricula (handleEnrollmentSubmit ~linha 12469)
+- Admin pode enviar comunicados pelo painel (Alt+Shift+M -> Enviar Comunicado)
+
+ENDPOINTS:
+- GET /api/inbox/list?email=EMAIL -> retorna broadcasts + mensagens do usuario
+- POST /api/inbox/send -> {studentName, studentEmail, subject, category, message}`
+  },
+  {
+    icon:"PIX",color:"bg-green-900 border-green-800",btnColor:"bg-green-700 hover:bg-green-600",tag:"Pagamento",tagClass:"bg-green-900 text-green-400 border-green-800",
+    title:"Webhook Asaas (PIX)",desc:"Confirmacao de pagamento automatica",
+    info:[["Endpoint","/api/asaas-webhook"],["POST recebe","PAYMENT_RECEIVED / PAYMENT_CONFIRMED"],["GET verifica","?value=VALOR&since=TIMESTAMP"],["TTL","15min, max 50 itens em memoria"]],
+    note:"Frontend polling a cada 5s: GET /api/asaas-webhook para liberar matricula apos pagamento.",
+    prompt:`Verifique e corrija o sistema de webhook de pagamento Asaas do projeto Escola da Fe.
+
+ARQUIVO: D:\\EscolaDaFe\\server.mjs (linhas ~273-328)
+
+COMO FUNCIONA:
+- Asaas envia POST /api/asaas-webhook quando pagamento aprovado
+- Eventos aceitos: PAYMENT_RECEIVED, PAYMENT_CONFIRMED, PAYMENT_RECEIVED_IN_CASH
+- Dados salvos em memoria no array 'recentApprovals' (max 50, TTL 15min)
+- Frontend faz polling GET /api/asaas-webhook?value=VALOR&since=TIMESTAMP a cada 5 segundos
+- Se encontrar aprovacao recente com valor proximo -> libera matricula
+- Para resetar: POST /api/student/reset-supported
+
+CONFIGURACAO NO ASAAS:
+- URL do webhook: https://escoladafe.vercel.app/api/asaas-webhook`
+  },
+  {
+    icon:"ADMIN",color:"bg-red-900 border-red-800",btnColor:"bg-red-700 hover:bg-red-600",tag:"Admin",tagClass:"bg-red-900 text-red-400 border-red-800",
+    title:"Painel Administrativo",desc:"Gerenciar alunos e comunicados",
+    info:[["Atalho","Alt + Shift + M"],["Usuario","<USUARIO_ADMIN>"],["Senha","<SENHA_ADMIN>"],["Abas","Alunos · Mensagens · Enviar Comunicado"]],
+    note:"Modal id='modal-admin'. JS do admin no final do arquivo apos script principal.",
+    prompt:`Verifique e corrija o painel administrativo do projeto Escola da Fe.
+
+ARQUIVO: D:\\EscolaDaFe\\escola_da_f.html (proximo ao final)
+
+ACESSO:
+- Atalho: Alt+Shift+M (maiusculo ou minusculo)
+- Usuario: <USUARIO_ADMIN>
+- Senha: <SENHA_ADMIN>
+
+ESTRUTURA:
+- Modal id="modal-admin" antes de </body>
+- Constantes: ADMIN_USER='<USUARIO_ADMIN>', ADMIN_PASS='<SENHA_ADMIN>'
+- 3 abas: Alunos, Mensagens, Enviar Comunicado
+- Cards de stats: alunos, mensagens, comunicados
+
+ENDPOINTS:
+- GET /api/student/stats -> lista alunos com XP e modulos
+- GET /api/inbox/list?email= -> mensagens dos alunos
+- POST /api/inbox/send -> enviar comunicado`
+  },
+  {
+    icon:"MATRICULA",color:"bg-indigo-900 border-indigo-800",btnColor:"bg-indigo-600 hover:bg-indigo-500",tag:"Auth",tagClass:"bg-indigo-900 text-indigo-400 border-indigo-800",
+    title:"Matricula de Alunos",desc:"Modal de cadastro inicial",
+    info:[["Modal id","enrollment-modal"],["Abrir","openEnrollmentModal()"],["Submit","handleEnrollmentSubmit(e) ~L12469"],["Endpoint","POST /api/student/register"]],
+    note:"Login = nome + e-mail (sem senha). StudentManager.STORAGE_KEY no localStorage.",
+    prompt:`Verifique e corrija o sistema de matricula do projeto Escola da Fe.
+
+ARQUIVO: D:\\EscolaDaFe\\escola_da_f.html
+
+COMO FUNCIONA:
+- checkEnrollmentOnStart() (~L12360): se nao ha aluno no localStorage, abre modal apos 600ms
+- openEnrollmentModal() (~L12451): remove classe 'hidden' do modal id="enrollment-modal"
+- handleEnrollmentSubmit(e) (~L12469): salva aluno + boas-vindas + POST /api/student/register
+- StudentManager.STORAGE_KEY = 'escola_da_fe_student' no localStorage
+- Login = nome completo + e-mail (sem senha)
+
+MODAL:
+- Card: max-w-md rounded-2xl py-4
+- Centralizado com items-center
+- Botao submit: text-xs tracking-normal
+
+ENDPOINT: POST /api/student/register -> {fullName, email, progress}`
+  },
+  {
+    icon:"XP",color:"bg-yellow-900 border-yellow-800",btnColor:"bg-yellow-600 hover:bg-yellow-500",tag:"Gamif",tagClass:"bg-yellow-900 text-yellow-400 border-yellow-800",
+    title:"Progresso e Gamificacao",desc:"XP, modulos, conquistas, streak",
+    info:[["Load","migrateProgress() ~L1420"],["Save","saveProgress() ~L1477"],["Reset","localStorage.removeItem ~L12007"],["Chave","'escola_da_fe_progress'"]],
+    note:"Campos: completedModules, xp, streak, level, badges, quizHistory, missions, weeklyGoal.",
+    prompt:`Verifique e corrija o sistema de progresso e gamificacao do projeto Escola da Fe.
+
+ARQUIVO: D:\\EscolaDaFe\\escola_da_f.html
+
+FUNCOES:
+- migrateProgress() (~L1420): le localStorage 'escola_da_fe_progress' e monta objeto 'progress' global
+- saveProgress() (~L1477): salva no localStorage E faz POST /api/student/sync em background
+- DEFAULT_PROGRESS: {completedModules:[], badges:[], xp:0, quizHistory:[], studyDates:[], favoritePrayers:[], prayedToday:{}, stageRewardsGiven:[], missions:{m1,m2,m3,m4}, weeklyGoal:{target:5,completed,modulesThisWeek}}
+
+GAMIFICACAO:
+- XP: ganho ao completar modulos e quizzes
+- Niveis: calculados pelo XP total
+- Conquistas (badges): array de strings
+- Streak: dias consecutivos (studyDates array)
+- Missoes semanais: m1, m2, m3, m4`
+  },
+  {
+    icon:"REF",color:"bg-slate-800 border-slate-700",btnColor:"bg-slate-600 hover:bg-slate-500",tag:"Referencia",tagClass:"bg-slate-700 text-slate-300 border-slate-600",
+    title:"Contexto Completo do Projeto",desc:"Prompt inicial para nova sessao de IA",
+    info:[["HTML","escola_da_f.html (13000+ linhas)"],["Servidor","server.mjs (Node.js HTTP)"],["Dados","data/students.json + data/inbox.json"],["Deploy","Vercel via GitHub"],["Producao","escoladafe.vercel.app"]],
+    note:"Use este prompt para comecar qualquer sessao nova de IA sem precisar explicar o projeto.",
+    prompt:`Voce esta trabalhando no projeto Escola da Fe. Informacoes tecnicas:
+
+PROJETO LOCAL: D:\\EscolaDaFe
+URL PRODUCAO: https://escoladafe.vercel.app
+GITHUB: https://github.com/olirumtecapp-debug/escola-da-fe
+
+CREDENCIAIS:
+- GitHub Token: <TOKEN_GITHUB>
+- Vercel Token: <TOKEN_VERCEL>
+- Vercel Project ID: prj_CMaoLFP2n8sVPKdMRfeQnnWN4nSC
+- GitHub Repo ID: 1370341188
+- Admin: Alt+Shift+M | usuario: <USUARIO_ADMIN> | senha: <SENHA_ADMIN>
+- Email do dono: olirumdev1@gmail.com
+
+REGRA: Sempre copiar escola_da_f.html -> index.html antes de qualquer commit.
+
+GIT: C:\\Program Files\\Verdent\\resources\\app.asar.unpacked\\node_modules\\dugite\\git\\cmd\\git.exe
+
+APIS:
+- POST /api/student/register -> matricula
+- POST /api/student/sync -> salvar progresso
+- GET /api/student/load?email= -> carregar progresso (cross-device)
+- GET /api/student/stats -> painel admin
+- GET /api/inbox/list?email= -> caixa postal
+- POST /api/inbox/send -> enviar mensagem
+- GET|POST /api/asaas-webhook -> pagamento PIX
+- POST /api/student/mark-supported -> marcar benfeitor
+- POST /api/student/reset-supported -> resetar benfeitor
+
+O que precisa ser feito?`
+  }
+];
+
+const cards = document.getElementById('cards');
+processes.forEach(p => {
+  const infoHTML = p.info.map(([k,v]) => `<div><span class="text-slate-500 text-xs">${k}:</span> <span class="text-amber-300 text-xs font-mono break-all">${v}</span></div>`).join('');
+  cards.innerHTML += `
+  <div class="card-hover bg-slate-900 border border-slate-800 rounded-2xl p-5">
+    <div class="flex items-start justify-between mb-3">
+      <div>
+        <h3 class="font-bold text-white text-sm">${p.title}</h3>
+        <p class="text-xs text-slate-400">${p.desc}</p>
+      </div>
+      <span class="tag ${p.tagClass} border">${p.tag}</span>
+    </div>
+    <div class="bg-slate-950 rounded-xl p-3 mb-3 space-y-1">${infoHTML}</div>
+    <p class="text-xs text-slate-500 mb-3">${p.note}</p>
+    <button class="copy-btn w-full ${p.btnColor} text-white text-xs font-bold py-2.5 px-4 rounded-xl" onclick="copyPrompt(this, \`${p.prompt.replace(/`/g, '\\`')}\`)">Copiar Prompt — ${p.title}</button>
+  </div>`;
+});
+
+function copyPrompt(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.innerHTML = 'Copiado!';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    const orig = btn.innerHTML;
+    btn.classList.add('copied'); btn.innerHTML = 'Copiado!';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 2000);
+  });
+}
+<\/script>
+</body>
+</html>

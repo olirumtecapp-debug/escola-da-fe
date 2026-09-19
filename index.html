@@ -12463,16 +12463,134 @@ const InboxManager = {
     cachedBroadcasts: [],
     cachedUserMessages: [],
 
+    getReadBroadcastIds() {
+        try { return JSON.parse(localStorage.getItem('escola_da_fe_read_broadcasts') || '[]'); } catch(e) { return []; }
+    },
+    getHiddenBroadcastIds() {
+        try { return JSON.parse(localStorage.getItem('escola_da_fe_hidden_broadcasts') || '[]'); } catch(e) { return []; }
+    },
+    getActiveBroadcasts() {
+        const hidden = this.getHiddenBroadcastIds();
+        return (this.cachedBroadcasts || []).filter(b => !hidden.includes(b.id));
+    },
+    getUnreadBroadcasts() {
+        const read = this.getReadBroadcastIds();
+        return this.getActiveBroadcasts().filter(b => !read.includes(b.id));
+    },
+    markBroadcastAsRead(id) {
+        const read = this.getReadBroadcastIds();
+        if (!read.includes(id)) {
+            read.push(id);
+            try { localStorage.setItem('escola_da_fe_read_broadcasts', JSON.stringify(read)); } catch(e) {}
+        }
+        this.updateBadges();
+        this.renderBroadcastList();
+    },
+    markAllBroadcastsAsRead() {
+        const allIds = (this.cachedBroadcasts || []).map(b => b.id);
+        try { localStorage.setItem('escola_da_fe_read_broadcasts', JSON.stringify(allIds)); } catch(e) {}
+        this.updateBadges();
+        this.renderBroadcastList();
+    },
+    hideBroadcast(id) {
+        const hidden = this.getHiddenBroadcastIds();
+        if (!hidden.includes(id)) {
+            hidden.push(id);
+            try { localStorage.setItem('escola_da_fe_hidden_broadcasts', JSON.stringify(hidden)); } catch(e) {}
+        }
+        this.markBroadcastAsRead(id);
+        this.renderBroadcastList();
+    },
+    updateBadges() {
+        const unreadAvisos = this.getUnreadBroadcasts().length;
+        const updateBadgeEl = (el) => {
+            if (!el) return;
+            if (unreadAvisos > 0) {
+                el.innerText = unreadAvisos;
+                el.classList.remove('hidden');
+            } else {
+                el.classList.add('hidden');
+            }
+        };
+        updateBadgeEl(document.getElementById('inbox-unread-badge'));
+        updateBadgeEl(document.getElementById('mobile-unread-badge'));
+        updateBadgeEl(document.getElementById('welcome-unread-count'));
+    },
+    renderBroadcastList() {
+        const container = document.getElementById('inbox-broadcasts-list');
+        if (!container) return;
+
+        const active = this.getActiveBroadcasts();
+        const readIds = this.getReadBroadcastIds();
+        const unread = this.getUnreadBroadcasts();
+
+        if (active.length === 0) {
+            container.innerHTML = `
+                <div class="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                    <span class="text-3xl block">🕊️</span>
+                    <h4 class="font-bold text-xs text-slate-700">Nenhum comunicado no mural</h4>
+                    <p class="text-[11px] text-slate-400">Você leu ou dispensou todos os comunicados da coordenação.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = `
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+                <span class="text-[11px] font-bold text-slate-500 uppercase">Mural de Avisos da Coordenação</span>
+                ${unread.length > 0 ? `
+                    <button type="button" onclick="InboxManager.markAllBroadcastsAsRead()" class="text-xs font-bold text-amber-700 hover:text-amber-800 flex items-center gap-1 cursor-pointer">
+                        <span>✓</span> <span>Marcar todos como lidos</span>
+                    </button>
+                ` : `
+                    <span class="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
+                        <span>✓</span> <span>Todos lidos</span>
+                    </span>
+                `}
+            </div>
+            <div class="space-y-3 pt-1">
+                ${active.map(b => {
+                    const isRead = readIds.includes(b.id);
+                    return `
+                    <div class="bg-slate-50 hover:bg-amber-50/40 border ${isRead ? 'border-slate-200' : 'border-amber-400 bg-amber-50/20 shadow-xs'} rounded-2xl p-4 transition-all space-y-2">
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full border border-amber-200">${b.tag || 'Comunicado'}</span>
+                                ${!isRead ? `<span class="bg-rose-500 text-white text-[9px] font-bold uppercase px-1.5 py-0.2 rounded-full">Novo</span>` : ''}
+                            </div>
+                            <span class="text-[10px] text-slate-400 font-medium">${b.date || ''}</span>
+                        </div>
+                        <h4 class="font-serif font-bold text-sm text-slate-800 mb-1">${b.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line mb-2">${b.content}</p>
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-200/70 text-[10px]">
+                            <p class="text-amber-800 font-semibold italic">— ${b.sender || 'Coordenação Pedagógica'}</p>
+                            <div class="flex items-center gap-2">
+                                ${!isRead ? `
+                                    <button type="button" onclick="InboxManager.markBroadcastAsRead('${b.id}')" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition flex items-center gap-1 shadow-2xs cursor-pointer">
+                                        <span>✓</span> <span>Marcar como lido</span>
+                                    </button>
+                                ` : `
+                                    <span class="text-emerald-700 font-bold flex items-center gap-1">
+                                        <span>✓</span> <span>Lido</span>
+                                    </span>
+                                `}
+                                <button type="button" onclick="InboxManager.hideBroadcast('${b.id}')" class="text-slate-400 hover:text-rose-600 font-bold px-1.5 py-1 transition cursor-pointer" title="Excluir do mural">
+                                    <span>🗑️ Excluir</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    },
+
     async loadInbox() {
         const student = StudentManager.getStudent();
         const email = student ? student.email : '';
-        const badge = document.getElementById('inbox-unread-badge');
-        const mobileBadge = document.getElementById('mobile-unread-badge');
-        const welcomeBadge = document.getElementById('welcome-unread-count');
-        const container = document.getElementById('inbox-broadcasts-list');
         const userContainer = document.getElementById('inbox-user-messages-list');
 
-        // Mensagens locais de boas-vindas
         let localWelcome = [];
         try { localWelcome = JSON.parse(localStorage.getItem('escola_da_fe_welcome_msgs') || '[]'); } catch(e) {}
 
@@ -12481,26 +12599,11 @@ const InboxManager = {
             if (res.ok) {
                 const data = await res.json();
                 const comunicadosDoServidor = (data && data.broadcasts) ? data.broadcasts : [];
-                    this.cachedBroadcasts = comunicadosDoServidor.length ? comunicadosDoServidor : [...localWelcome];
+                this.cachedBroadcasts = comunicadosDoServidor.length ? comunicadosDoServidor : [...localWelcome];
                 this.cachedUserMessages = data.userMessages || [];
 
-                if (container) {
-                    if (this.cachedBroadcasts.length === 0) {
-                        container.innerHTML = '<div class="p-6 text-center text-xs text-slate-400">Nenhum comunicado no mural no momento.</div>';
-                    } else {
-                        container.innerHTML = this.cachedBroadcasts.map(b => `
-                            <div class="bg-slate-50 hover:bg-amber-50/40 border border-slate-200 hover:border-amber-300/60 rounded-2xl p-4 transition-all">
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full border border-amber-200">${b.tag || 'Comunicado'}</span>
-                                    <span class="text-[10px] text-slate-400 font-medium">${b.date}</span>
-                                </div>
-                                <h4 class="font-serif font-bold text-sm text-slate-800 mb-1">${b.title}</h4>
-                                <p class="text-xs text-slate-600 leading-relaxed mb-2">${b.content}</p>
-                                <p class="text-[10px] text-amber-800 font-semibold italic">— ${b.sender}</p>
-                            </div>
-                        `).join('');
-                    }
-                }
+                this.renderBroadcastList();
+                this.updateBadges();
 
                 if (userContainer) {
                     if (this.cachedUserMessages.length === 0) {
@@ -12529,46 +12632,13 @@ const InboxManager = {
                         }).join('');
                     }
                 }
-
-                const totalAvisos = this.cachedBroadcasts.length;
-                if (badge) {
-                    badge.innerText = totalAvisos;
-                    badge.classList.remove('hidden');
-                }
-                if (mobileBadge) {
-                    mobileBadge.innerText = totalAvisos;
-                    mobileBadge.classList.remove('hidden');
-                }
-                if (welcomeBadge) {
-                    welcomeBadge.innerText = totalAvisos;
-                    welcomeBadge.classList.remove('hidden');
-                }
             }
         } catch (e) {
             console.warn('[InboxManager] Não foi possível carregar mensagens do servidor; exibindo locais.');
-            // Exibe mensagens locais mesmo offline
             if (localWelcome.length > 0) {
                 this.cachedBroadcasts = localWelcome;
-                const container = document.getElementById('inbox-broadcasts-list');
-                if (container) {
-                    container.innerHTML = localWelcome.map(b => `
-                        <div class="bg-slate-50 hover:bg-amber-50/40 border border-slate-200 hover:border-amber-300/60 rounded-2xl p-4 transition-all">
-                            <div class="flex items-center justify-between mb-1.5">
-                                <span class="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-900 px-2.5 py-0.5 rounded-full border border-amber-200">${b.tag || 'Comunicado'}</span>
-                                <span class="text-[10px] text-slate-400 font-medium">${b.date}</span>
-                            </div>
-                            <h4 class="font-serif font-bold text-sm text-slate-800 mb-1">${b.title}</h4>
-                            <p class="text-xs text-slate-600 leading-relaxed mb-2">${b.content}</p>
-                            <p class="text-[10px] text-amber-800 font-semibold italic">— ${b.sender}</p>
-                        </div>
-                    `).join('');
-                }
-                const badge = document.getElementById('inbox-unread-badge');
-                const mobileBadge = document.getElementById('mobile-unread-badge');
-                const welcomeBadge = document.getElementById('welcome-unread-count');
-                if (badge) { badge.innerText = localWelcome.length; badge.classList.remove('hidden'); }
-                if (mobileBadge) { mobileBadge.innerText = localWelcome.length; mobileBadge.classList.remove('hidden'); }
-                if (welcomeBadge) { welcomeBadge.innerText = localWelcome.length; welcomeBadge.classList.remove('hidden'); }
+                this.renderBroadcastList();
+                this.updateBadges();
             }
         }
     }
