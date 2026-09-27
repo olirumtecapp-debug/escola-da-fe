@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escola da Fé | Conhecer, compreender e viver a fé</title>
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Escola da Fé">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+    <link rel="icon" type="image/png" href="/assets/icons/icon-192.png">
     <script src="assets/vendor/tailwind.js" onerror="var s=document.createElement('script');s.src='https://cdn.tailwindcss.com';document.head.appendChild(s);"></script>
     <script src="assets/data/santos_data.js"></script>
     <script>
@@ -152,11 +159,27 @@
                     <span>☕</span>
                     <span class="hidden xl:inline">Apoiar</span>
                 </button>
+                <button onclick="openShareModal()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl flex items-center gap-1.5 text-xs text-slate-200 hover:text-white transition-all ml-1 shadow-sm" title="Compartilhar Escola da Fé">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                    <span class="hidden xl:inline">Compartilhar</span>
+                </button>
+                <button id="btn-install-header" onclick="triggerPWAInstall()" class="px-2.5 py-1.5 bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 rounded-xl flex items-center gap-1.5 text-xs text-emerald-300 font-bold transition-all ml-1 shadow-sm" title="Instalar Aplicativo (PC ou Celular)">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    <span class="hidden xl:inline">Instalar App</span>
+                </button>
             </nav>
             
-            <button class="lg:hidden p-2 text-white hover:text-accent-500" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
+            <div class="flex items-center gap-1 lg:hidden">
+                <button onclick="openShareModal()" class="p-2 text-slate-200 hover:text-white rounded-lg hover:bg-primary-800 transition-colors" title="Compartilhar">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                </button>
+                <button id="btn-install-mobile-bar" onclick="triggerPWAInstall()" class="p-2 text-emerald-300 hover:text-emerald-200 rounded-lg hover:bg-primary-800 transition-colors" title="Instalar App">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                </button>
+                <button class="p-2 text-white hover:text-accent-500 rounded-lg hover:bg-primary-800" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
         </div>
         
         <div id="mobile-menu" class="hidden bg-primary-800 lg:hidden border-t border-primary-900">
@@ -173,6 +196,8 @@
                 </button>
                 <button onclick="openProfileModal(); document.getElementById('mobile-menu').classList.add('hidden')" class="text-left px-4 py-2.5 hover:bg-primary-900 rounded-lg text-amber-300 font-semibold flex items-center gap-2">👤 Meu Perfil de Estudante</button>
                 <button onclick="openApoioModal(); document.getElementById('mobile-menu').classList.add('hidden')" class="text-left px-4 py-2.5 hover:bg-primary-900 rounded-lg text-amber-300 font-bold flex items-center gap-2">☕ Apoiar a Escola da Fé (Cafezinho / PIX)</button>
+                <button onclick="openShareModal(); document.getElementById('mobile-menu').classList.add('hidden')" class="text-left px-4 py-2.5 hover:bg-primary-900 rounded-lg text-slate-200 font-semibold flex items-center gap-2">🔗 Compartilhar Escola da Fé</button>
+                <button id="btn-install-mobile-menu" onclick="triggerPWAInstall(); document.getElementById('mobile-menu').classList.add('hidden')" class="text-left px-4 py-2.5 hover:bg-primary-900 rounded-lg text-emerald-300 font-bold flex items-center gap-2">📲 Instalar App no Celular ou PC</button>
             </div>
         </div>
     </header>
@@ -1368,11 +1393,121 @@
                     Agora não, continuar estudos →
                 </button>
             </div>
+    </div>
+
+    <!-- MODAL DE COMPARTILHAMENTO -->
+    <div id="modal-share" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden" onclick="if(event.target === this) closeShareModal()">
+        <div class="bg-slate-900 border border-amber-500/30 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden text-slate-200 animate-in fade-in zoom-in duration-200">
+            <div class="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl font-bold">
+                        🕊️
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-lg font-bold text-amber-200">Compartilhar Escola da Fé</h3>
+                        <p class="text-xs text-slate-400">Evangelize enviando este estudo para amigos e família</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeShareModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-lg transition">✕</button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <!-- QR Code Box -->
+                <div class="flex flex-col items-center justify-center p-4 bg-slate-950/70 border border-slate-800 rounded-xl text-center">
+                    <img src="/assets/img/qrcode-escoladafe.png" alt="QR Code Escola da Fé" class="w-36 h-36 rounded-lg bg-white p-2 shadow-md">
+                    <p class="text-[11px] text-amber-300/80 mt-2 font-medium">Aponte a câmera do celular para abrir direto</p>
+                    <span class="text-[10px] text-slate-500">escoladafe.creativeam.com.br</span>
+                </div>
+
+                <!-- Botões de Ação Rápida -->
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button type="button" onclick="shareViaWhatsApp()" class="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
+                        <span>💬</span> WhatsApp
+                    </button>
+                    <button type="button" onclick="shareViaTelegram()" class="py-2.5 px-3 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
+                        <span>✈️</span> Telegram
+                    </button>
+                </div>
+
+                <!-- Campo de Copiar Link -->
+                <div class="space-y-1.5">
+                    <label class="text-[11px] text-slate-400 font-medium">Link direto para copiar:</label>
+                    <div class="flex items-center gap-2">
+                        <input id="share-link-input" type="text" readonly value="https://escoladafe.creativeam.com.br" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 font-mono focus:outline-none">
+                        <button id="btn-copy-share-link" type="button" onclick="copyShareUrl()" class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition flex items-center gap-1.5 shrink-0">
+                            <span>📋</span> Copiar
+                        </button>
+                    </div>
+                </div>
+
+                <div id="native-share-container" class="hidden pt-1">
+                    <button type="button" onclick="triggerNativeShare()" class="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
+                        <span>📤</span> Mais opções de compartilhamento...
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- MODAL DE INSTALAÇÃO DO APP -->
+    <div id="modal-install" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden" onclick="if(event.target === this) closeInstallModal()">
+        <div class="bg-slate-900 border border-amber-500/30 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden text-slate-200 animate-in fade-in zoom-in duration-200">
+            <div class="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+                <div class="flex items-center gap-3">
+                    <img src="/assets/icons/icon-192.png" alt="Escola da Fé" class="w-11 h-11 rounded-xl shadow-md border border-amber-500/40">
+                    <div>
+                        <h3 class="font-serif text-lg font-bold text-amber-200">Instalar Escola da Fé</h3>
+                        <p class="text-xs text-slate-400">Aplicativo para Computador e Smartphone</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeInstallModal()" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center text-lg transition">✕</button>
+            </div>
 
-    <!-- TOAST CONTAINER -->
+            <div class="p-6 space-y-4">
+                <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-xl space-y-2 text-xs text-slate-300">
+                    <div class="flex items-start gap-2.5">
+                        <span class="text-amber-400 font-bold text-base">⚡</span>
+                        <div><strong class="text-slate-100">Acesso Instantâneo:</strong> Abra direto da sua tela inicial ou área de trabalho sem precisar digitar o endereço.</div>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <span class="text-amber-400 font-bold text-base">📖</span>
+                        <div><strong class="text-slate-100">Tela Cheia Imersiva:</strong> Estudo sem distrações da barra de navegação.</div>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <span class="text-amber-400 font-bold text-base">💾</span>
+                        <div><strong class="text-slate-100">Leve e Seguro:</strong> Não ocupa espaço de memória como aplicativos pesados.</div>
+                    </div>
+                </div>
+
+                <!-- Botão de Instalação Automática -->
+                <div id="pwa-install-native-box">
+                    <button type="button" id="btn-trigger-pwa-install" onclick="executePWAInstall()" class="w-full py-3 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+                        <span class="text-base">📲</span> Instalar Aplicativo Agora
+                    </button>
+                </div>
+
+                <!-- Guia para iOS / Navegadores sem prompt direto -->
+                <div class="pt-2 border-t border-slate-800 space-y-3">
+                    <p class="text-[11px] font-semibold text-amber-300 uppercase tracking-wide">Como instalar manualmente:</p>
+                    
+                    <div class="p-3 bg-slate-950/50 border border-slate-800/80 rounded-xl space-y-1.5 text-xs text-slate-300">
+                        <div class="font-bold text-slate-200 flex items-center gap-1.5">
+                            <span>🍎</span> No iPhone ou iPad (Safari):
+                        </div>
+                        <p class="text-[11px] text-slate-400 pl-5">1. Toque no botão de <strong>Compartilhar</strong> (ícone do quadrado com a seta para cima).</p>
+                        <p class="text-[11px] text-slate-400 pl-5">2. Role para baixo e selecione <strong>"Adicionar à Tela de Início"</strong>.</p>
+                    </div>
+
+                    <div class="p-3 bg-slate-950/50 border border-slate-800/80 rounded-xl space-y-1.5 text-xs text-slate-300">
+                        <div class="font-bold text-slate-200 flex items-center gap-1.5">
+                            <span>💻</span> No Computador (Chrome / Edge):
+                        </div>
+                        <p class="text-[11px] text-slate-400 pl-5">Clique no ícone de instalar <strong>(🖥️ / ⊕)</strong> na barra de endereços do navegador no topo direito.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
 
     <!-- FOOTER -->
@@ -13652,6 +13787,146 @@ window.onload = function() {
             }
         } catch(err) {
             showToast('Erro de conexão ao publicar comunicado.', 'error');
+        }
+    }
+
+    /* ================= PWA & COMPARTILHAMENTO ================= */
+    let deferredPWAInstallPrompt = null;
+
+    // Registra o Service Worker para suporte PWA offline e instalabilidade
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('[PWA] Service Worker registrado com sucesso:', reg.scope))
+                .catch(err => console.warn('[PWA] Falha ao registrar Service Worker:', err));
+        });
+    }
+
+    // Captura o prompt nativo de instalação
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPWAInstallPrompt = e;
+        const nativeBox = document.getElementById('pwa-install-native-box');
+        if (nativeBox) nativeBox.classList.remove('hidden');
+        console.log('[PWA] beforeinstallprompt capturado com sucesso');
+    });
+
+    // Detecta se já está instalado e rodando em modo standalone
+    function isAppAlreadyInstalled() {
+        return window.matchMedia('(display-mode: standalone)').matches ||
+               window.navigator.standalone === true ||
+               document.referrer.includes('android-app://');
+    }
+
+    window.addEventListener('appinstalled', () => {
+        deferredPWAInstallPrompt = null;
+        console.log('[PWA] Aplicativo Escola da Fé instalado!');
+        showToast('Escola da Fé instalado com sucesso!', 'success');
+        hideInstallButtonsIfInstalled();
+    });
+
+    function hideInstallButtonsIfInstalled() {
+        if (isAppAlreadyInstalled()) {
+            document.querySelectorAll('#btn-nav-install, #btn-mobile-install').forEach(btn => {
+                btn.style.display = 'none';
+            });
+        }
+    }
+    document.addEventListener('DOMContentLoaded', hideInstallButtonsIfInstalled);
+
+    // Funções do Modal de Instalação
+    function openInstallModal() {
+        const modal = document.getElementById('modal-install');
+        if (modal) modal.classList.remove('hidden');
+        if (typeof closeMobileMenu === 'function') closeMobileMenu();
+    }
+
+    function closeInstallModal() {
+        const modal = document.getElementById('modal-install');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    async function executePWAInstall() {
+        if (deferredPWAInstallPrompt) {
+            deferredPWAInstallPrompt.prompt();
+            const { outcome } = await deferredPWAInstallPrompt.userChoice;
+            console.log('[PWA] Escolha do usuário na instalação:', outcome);
+            deferredPWAInstallPrompt = null;
+            closeInstallModal();
+        } else {
+            showToast('Siga as instruções abaixo para adicionar à tela inicial.', 'info');
+        }
+    }
+
+    // Funções do Modal de Compartilhamento
+    function openShareModal() {
+        const modal = document.getElementById('modal-share');
+        if (modal) {
+            modal.classList.remove('hidden');
+            if (navigator.share) {
+                const nativeContainer = document.getElementById('native-share-container');
+                if (nativeContainer) nativeContainer.classList.remove('hidden');
+            }
+        }
+        if (typeof closeMobileMenu === 'function') closeMobileMenu();
+    }
+
+    function closeShareModal() {
+        const modal = document.getElementById('modal-share');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    function getShareText() {
+        return "🕊️ Conheça a *Escola da Fé* — Curso completo e gratuito de Teologia, Sagradas Escrituras e História da Igreja:\n\nhttps://escoladafe.creativeam.com.br";
+    }
+
+    function shareViaWhatsApp() {
+        const text = encodeURIComponent(getShareText());
+        window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
+
+    function shareViaTelegram() {
+        const url = encodeURIComponent('https://escoladafe.creativeam.com.br');
+        const text = encodeURIComponent('Conheça a Escola da Fé — Plataforma católica de formação teológica e bíblica');
+        window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+    }
+
+    async function triggerNativeShare() {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: 'Escola da Fé — Formação Católica',
+                    text: 'Aprenda e aprofunde sua fé católica com este curso gratuito de Teologia e Sagrada Tradição.',
+                    url: 'https://escoladafe.creativeam.com.br'
+                });
+            } catch (err) {
+                if (err.name !== 'AbortError') console.warn('Erro ao compartilhar:', err);
+            }
+        }
+    }
+
+    async function copyShareUrl() {
+        const input = document.getElementById('share-link-input');
+        const btn = document.getElementById('btn-copy-share-link');
+        const url = input ? input.value : 'https://escoladafe.creativeam.com.br';
+        try {
+            await navigator.clipboard.writeText(url);
+            if (btn) {
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<span>✓</span> Copiado!';
+                btn.classList.add('bg-emerald-500', 'text-slate-950');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('bg-emerald-500');
+                }, 2000);
+            }
+            showToast('Link copiado para a área de transferência!', 'success');
+        } catch (e) {
+            if (input) {
+                input.select();
+                document.execCommand('copy');
+                showToast('Link copiado!', 'success');
+            }
         }
     }
     </script>
