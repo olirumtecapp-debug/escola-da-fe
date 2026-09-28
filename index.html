@@ -1335,7 +1335,11 @@
                 </div>
             </div>
 
-            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2">
+                <button onclick="logoutStudent()" class="px-4 py-1.5 bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs transition-colors flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    Trocar de Conta
+                </button>
                 <button onclick="closeProfileModal()" class="px-4 py-1.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs transition-colors">
                     Fechar
                 </button>
@@ -13167,6 +13171,23 @@ function openProfileModal() {
 function closeProfileModal() {
     const modal = document.getElementById('modal-profile');
     if (modal) modal.classList.add('hidden');
+}
+
+function logoutStudent() {
+    if (!confirm('Deseja sair desta conta?\n\nSeu progresso está salvo no servidor — basta fazer login novamente com o mesmo e-mail para continuar de onde parou.')) return;
+
+    // Limpa todos os dados locais
+    localStorage.removeItem('escola_da_fe_student');
+    localStorage.removeItem('escola_da_fe_progress');
+    localStorage.removeItem('escola_da_fe_read_broadcasts');
+    localStorage.removeItem('escola_da_fe_hidden_broadcasts');
+    localStorage.removeItem('escola_da_fe_welcome_msgs');
+
+    closeProfileModal();
+    showToast('Conta desconectada. Faça login novamente para continuar sua jornada!', 'info');
+
+    // Recarrega a página após 1s para limpar o estado em memória
+    setTimeout(() => location.reload(), 1200);
 }
 
 function handleSaveProfileName() {
