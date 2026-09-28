@@ -140,35 +140,57 @@
                 </div>
             </div>
             
-            <!-- NAVEGAÇÃO DESKTOP -->
+            <!-- NAVEGAÇÃO DESKTOP: 3 links com texto + separador + 4 icon-buttons -->
             <nav class="hidden lg:flex items-center gap-0.5 text-sm font-medium flex-1 justify-center">
-                <button onclick="navigate('dashboard')" title="Jornada" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="hidden xl:inline">Jornada</span></button>
-                <button onclick="navigate('saints')" title="Santos" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg><span class="hidden xl:inline">Santos</span></button>
-                <button onclick="navigate('timeline')" title="História da Igreja" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="hidden xl:inline">História</span></button>
-                <button onclick="navigate('prayers')" title="Orações" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-amber-300 font-semibold transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg><span class="hidden xl:inline">Orações</span></button>
-                <button onclick="navigate('achievements')" title="Conquistas" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-accent-400 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg><span class="hidden xl:inline">Conquistas</span></button>
-                <button onclick="navigate('certificate')" title="Certificado de Conclusão" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-amber-200 transition-colors"><span class="cert-lock-indicator text-sm">🔒</span><span class="hidden xl:inline">Certificado</span></button>
-                <button onclick="openInboxModal()" title="Caixa Postal & Avisos" class="relative px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-amber-200 transition-colors">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    <span class="hidden xl:inline">Avisos</span>
+                <!-- Jornada / História / Santos — sempre com texto -->
+                <button onclick="navigate('dashboard')" title="Jornada" class="px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors whitespace-nowrap">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span>Jornada</span>
+                </button>
+                <button onclick="navigate('timeline')" title="História da Igreja" class="px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors whitespace-nowrap">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>História</span>
+                </button>
+                <button onclick="navigate('saints')" title="Santos" class="px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors whitespace-nowrap">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <span>Santos</span>
+                </button>
+                <!-- Separador -->
+                <div class="w-px h-5 bg-white/20 mx-1.5 shrink-0"></div>
+                <!-- Orações, Conquistas, Certificado, Avisos — icon-buttons padronizados -->
+                <button onclick="navigate('prayers')" title="Orações" class="w-8 h-8 bg-slate-800/60 hover:bg-primary-800 border border-slate-700/60 rounded-xl flex items-center justify-center text-amber-300 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                </button>
+                <button onclick="navigate('achievements')" title="Conquistas" class="w-8 h-8 bg-slate-800/60 hover:bg-primary-800 border border-slate-700/60 rounded-xl flex items-center justify-center text-accent-400 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                </button>
+                <button onclick="navigate('certificate')" title="Certificado de Conclusão" class="w-8 h-8 bg-slate-800/60 hover:bg-primary-800 border border-slate-700/60 rounded-xl flex items-center justify-center text-amber-200 transition-all shadow-sm">
+                    <span class="cert-lock-indicator text-sm leading-none">🔒</span>
+                </button>
+                <button onclick="openInboxModal()" title="Caixa Postal & Avisos" class="relative w-8 h-8 bg-slate-800/60 hover:bg-primary-800 border border-slate-700/60 rounded-xl flex items-center justify-center text-amber-200 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                     <span id="inbox-unread-badge" class="hidden px-1.5 py-0.5 bg-rose-500 text-white text-[10px] font-bold rounded-full animate-pulse absolute -top-0.5 -right-0.5">2</span>
                 </button>
+            </nav>
+
+            <!-- AÇÕES DESKTOP: Perfil + ☕ + Share + Install (DIREITA) -->
+            <div class="hidden lg:flex items-center gap-1 shrink-0">
                 <!-- Perfil -->
-                <button onclick="openProfileModal()" id="header-student-btn" class="ml-1 px-3 py-1.5 bg-accent-600/30 hover:bg-accent-600/50 border border-accent-400/40 rounded-xl flex items-center gap-2 text-xs text-amber-200 transition-all font-medium">
+                <button onclick="openProfileModal()" id="header-student-btn" class="px-3 py-1.5 bg-accent-600/30 hover:bg-accent-600/50 border border-accent-400/40 rounded-xl flex items-center gap-2 text-xs text-amber-200 transition-all font-medium">
                     <div class="w-5 h-5 rounded-full bg-accent-500 text-slate-950 font-bold flex items-center justify-center text-[10px]" id="header-student-avatar">✝</div>
                     <span id="header-student-name" class="max-w-[80px] truncate">Matrícula</span>
                 </button>
-                <!-- Apoiar (ícone) -->
-                <button onclick="openApoioModal()" title="Apoiar a Escola da Fé" class="w-8 h-8 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-xl flex items-center justify-center text-amber-300 transition-all shadow-sm ml-1">☕</button>
-                <!-- Compartilhar (ícone) -->
-                <button onclick="openShareModal()" title="Compartilhar Escola da Fé" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl flex items-center justify-center text-slate-200 hover:text-white transition-all shadow-sm ml-1">
+                <!-- Apoiar -->
+                <button onclick="openApoioModal()" title="Apoiar a Escola da Fé" class="w-8 h-8 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-xl flex items-center justify-center text-amber-300 transition-all shadow-sm">☕</button>
+                <!-- Compartilhar -->
+                <button onclick="openShareModal()" title="Compartilhar Escola da Fé" class="w-8 h-8 bg-slate-800/60 hover:bg-slate-700 border border-slate-700/60 rounded-xl flex items-center justify-center text-slate-200 hover:text-white transition-all shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
                 </button>
-                <!-- Instalar (ícone) -->
-                <button id="btn-install-header" onclick="openInstallModal()" title="Instalar App" class="w-8 h-8 bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 rounded-xl flex items-center justify-center text-emerald-300 transition-all shadow-sm ml-1">
+                <!-- Instalar -->
+                <button id="btn-install-header" onclick="openInstallModal()" title="Instalar App" class="w-8 h-8 bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 rounded-xl flex items-center justify-center text-emerald-300 transition-all shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 </button>
-            </nav>
+            </div>
             
             <!-- AÇÕES MOBILE NO LADO OPOSTO (DIREITO) - NUNCA QUEBRA LINHA -->
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0 lg:hidden">
