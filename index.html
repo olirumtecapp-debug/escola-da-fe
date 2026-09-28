@@ -130,44 +130,43 @@
     <header class="bg-primary-900 text-white shadow-lg border-b-4 border-accent-600 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 md:py-4 flex items-center justify-between gap-2 flex-nowrap">
             <!-- LOGO & TÍTULO (LADO ESQUERDO) -->
-            <div class="flex items-center gap-2.5 sm:gap-3 cursor-pointer min-w-0 shrink" onclick="navigate('dashboard')">
+            <div class="flex items-center gap-2.5 sm:gap-3 cursor-pointer shrink-0" onclick="navigate('dashboard')">
                 <div class="w-9 h-9 sm:w-10 sm:h-10 bg-accent-600 rounded-full flex items-center justify-center text-white shadow-md shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6 6 1-4 4 1 6-6-3-6 3 1-6-4-4 6-1 3-6z"/></svg>
                 </div>
-                <div class="min-w-0">
-                    <h1 class="text-base sm:text-xl md:text-2xl font-serif font-bold tracking-wide leading-tight truncate">Escola da Fé</h1>
-                    <p class="text-[9px] sm:text-[10px] text-accent-100 opacity-80 uppercase tracking-widest leading-none truncate hidden min-[360px]:block">Conhecer • Compreender • Viver</p>
+                <div>
+                    <h1 class="text-base sm:text-xl md:text-2xl font-serif font-bold tracking-wide leading-tight whitespace-nowrap">Escola da Fé</h1>
+                    <p class="text-[9px] sm:text-[10px] text-accent-100 opacity-80 uppercase tracking-widest leading-none hidden sm:block whitespace-nowrap">Conhecer • Compreender • Viver</p>
                 </div>
             </div>
             
             <!-- NAVEGAÇÃO DESKTOP -->
-            <nav class="hidden lg:flex items-center gap-1 text-sm font-medium shrink-0">
-                <button onclick="navigate('dashboard')" class="px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> Jornada</button>
-                <button onclick="navigate('saints')" class="px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg> Santos</button>
-                <button onclick="navigate('timeline')" class="px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> História</button>
-                <button onclick="navigate('prayers')" class="px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-amber-300 font-semibold transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg> Orações</button>
-                <button onclick="navigate('achievements')" class="px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-accent-400 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg> Conquistas</button>
-                <button onclick="navigate('certificate')" class="px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-amber-200 transition-colors"><span class="cert-lock-indicator text-xs">🔒</span> <span>Certificado</span></button>
-                <button onclick="openInboxModal()" class="relative px-3 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-amber-200 transition-colors" title="Caixa Postal & Avisos">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    <span>Avisos</span>
-                    <span id="inbox-unread-badge" class="hidden px-1.5 py-0.2 bg-rose-500 text-white text-[10px] font-bold rounded-full animate-pulse">2</span>
+            <nav class="hidden lg:flex items-center gap-0.5 text-sm font-medium flex-1 justify-center">
+                <button onclick="navigate('dashboard')" title="Jornada" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg><span class="hidden xl:inline">Jornada</span></button>
+                <button onclick="navigate('saints')" title="Santos" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg><span class="hidden xl:inline">Santos</span></button>
+                <button onclick="navigate('timeline')" title="História da Igreja" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span class="hidden xl:inline">História</span></button>
+                <button onclick="navigate('prayers')" title="Orações" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-amber-300 font-semibold transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg><span class="hidden xl:inline">Orações</span></button>
+                <button onclick="navigate('achievements')" title="Conquistas" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-accent-400 transition-colors"><svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg><span class="hidden xl:inline">Conquistas</span></button>
+                <button onclick="navigate('certificate')" title="Certificado de Conclusão" class="px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-amber-200 transition-colors"><span class="cert-lock-indicator text-sm">🔒</span><span class="hidden xl:inline">Certificado</span></button>
+                <button onclick="openInboxModal()" title="Caixa Postal & Avisos" class="relative px-2.5 py-2 hover:bg-primary-800 rounded-lg flex items-center gap-1.5 text-amber-200 transition-colors">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span class="hidden xl:inline">Avisos</span>
+                    <span id="inbox-unread-badge" class="hidden px-1.5 py-0.5 bg-rose-500 text-white text-[10px] font-bold rounded-full animate-pulse absolute -top-0.5 -right-0.5">2</span>
                 </button>
+                <!-- Perfil -->
                 <button onclick="openProfileModal()" id="header-student-btn" class="ml-1 px-3 py-1.5 bg-accent-600/30 hover:bg-accent-600/50 border border-accent-400/40 rounded-xl flex items-center gap-2 text-xs text-amber-200 transition-all font-medium">
                     <div class="w-5 h-5 rounded-full bg-accent-500 text-slate-950 font-bold flex items-center justify-center text-[10px]" id="header-student-avatar">✝</div>
-                    <span id="header-student-name" class="max-w-[120px] truncate">Matrícula</span>
+                    <span id="header-student-name" class="max-w-[80px] truncate">Matrícula</span>
                 </button>
-                <button onclick="openApoioModal()" class="px-2.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-xl flex items-center gap-1.5 text-xs text-amber-300 font-bold transition-all ml-1 shadow-sm" title="Apoiar a Escola da Fé">
-                    <span>☕</span>
-                    <span class="hidden xl:inline">Apoiar</span>
-                </button>
-                <button onclick="openShareModal()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl flex items-center gap-1.5 text-xs text-slate-200 hover:text-white transition-all ml-1 shadow-sm" title="Compartilhar Escola da Fé">
+                <!-- Apoiar (ícone) -->
+                <button onclick="openApoioModal()" title="Apoiar a Escola da Fé" class="w-8 h-8 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-xl flex items-center justify-center text-amber-300 transition-all shadow-sm ml-1">☕</button>
+                <!-- Compartilhar (ícone) -->
+                <button onclick="openShareModal()" title="Compartilhar Escola da Fé" class="w-8 h-8 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl flex items-center justify-center text-slate-200 hover:text-white transition-all shadow-sm ml-1">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
-                    <span class="hidden xl:inline">Compartilhar</span>
                 </button>
-                <button id="btn-install-header" onclick="openInstallModal()" class="px-2.5 py-1.5 bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 rounded-xl flex items-center gap-1.5 text-xs text-emerald-300 font-bold transition-all ml-1 shadow-sm" title="Instalar Aplicativo (PC ou Celular)">
+                <!-- Instalar (ícone) -->
+                <button id="btn-install-header" onclick="openInstallModal()" title="Instalar App" class="w-8 h-8 bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/50 rounded-xl flex items-center justify-center text-emerald-300 transition-all shadow-sm ml-1">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                    <span class="hidden xl:inline">Instalar App</span>
                 </button>
             </nav>
             
