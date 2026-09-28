@@ -2,6 +2,13 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import adminLogin from './lib/handlers/admin/login.js';
+import adminAuthStatus from './lib/handlers/admin/auth-status.js';
+import adminSetPassword from './lib/handlers/admin/set-password.js';
+import adminStudents from './lib/handlers/admin/students.js';
+import adminMessages from './lib/handlers/admin/messages.js';
+import adminBroadcast from './lib/handlers/admin/broadcast.js';
+import adminBroadcasts from './lib/handlers/admin/broadcasts.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -125,6 +132,42 @@ const server = http.createServer(async (req, res) => {
     const urlParts = req.url.split('?');
     const pathname = urlParts[0];
     const searchParams = new URLSearchParams(urlParts[1] || '');
+
+    // 0. Rotas Administrativas (/api/admin/*)
+    if (pathname.startsWith('/api/admin/')) {
+        const rota = pathname.replace('/api/', '');
+        const adminRoutes = {
+            'admin/login': adminLogin,
+            'admin/auth-status': adminAuthStatus,
+            'admin/set-password': adminSetPassword,
+            'admin/students': adminStudents,
+            'admin/messages': adminMessages,
+            'admin/broadcast': adminBroadcast,
+            'admin/broadcasts': adminBroadcasts,
+        };
+        const atende = adminRoutes[rota];
+        if (atende) {
+            const body = await parseBody(req);
+            const mockReq = {
+                method: req.method,
+                url: req.url,
+                headers: req.headers,
+                body,
+                query: Object.fromEntries(searchParams.entries())
+            };
+            const mockRes = {
+                setHeader: (k, v) => res.setHeader(k, v),
+                status: (statusCode) => ({
+                    json: (data) => sendJson(res, statusCode, data),
+                    end: () => {
+                        res.writeHead(statusCode);
+                        res.end();
+                    }
+                })
+            };
+            return atende(mockReq, mockRes);
+        }
+    }
 
     // 1. Matrícula ou Atualização do Aluno
     if (pathname === '/api/student/register' && req.method === 'POST') {
@@ -388,7 +431,9 @@ const server = http.createServer(async (req, res) => {
 
     // Arquivos Estáticos & Áudio MP3
     let safePath = pathname;
-    if (safePath === '/' || safePath === '') safePath = '/escola_da_f.html';
+    if (safePath === '/' || safePath === '') {
+        safePath = fs.existsSync(path.join(__dirname, 'index.html')) ? '/index.html' : '/escola_da_f.html';
+    }
 
     const filePath = path.join(__dirname, safePath);
 
