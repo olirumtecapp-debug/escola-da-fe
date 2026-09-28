@@ -13148,39 +13148,20 @@ window.onload = function() {
     let adminAuthenticated = false;
     let adminTemSenhaPropria = false;
 
-    document.addEventListener('keydown', function(e) {
-        const isM = e.key === 'M' || e.key === 'm' || e.code === 'KeyM';
-        const isA = e.key === 'A' || e.key === 'a' || e.code === 'KeyA';
-        if ((e.altKey && e.shiftKey && isM) || (e.ctrlKey && e.altKey && isA) || (e.altKey && isA)) {
-            e.preventDefault();
-            const modal = document.getElementById('modal-admin');
-            if (modal && modal.classList.contains('hidden')) {
-                openAdminModal();
-            } else if (modal) {
-                closeAdminModal();
-            }
-        }
-    });
-
-    // Abertura direta por link / URL (ex: #admin ou ?admin)
-    window.addEventListener('DOMContentLoaded', function() {
-        if (window.location.hash === '#admin' || window.location.search.includes('admin')) {
-            setTimeout(openAdminModal, 300);
-        }
-    });
-    window.addEventListener('hashchange', function() {
-        if (window.location.hash === '#admin') openAdminModal();
-    });
-
     function openAdminModal() {
         const modal = document.getElementById('modal-admin');
-        if (modal) modal.classList.remove('hidden');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        modal.style.display = 'block';
         if (adminAuthenticated) {
             showAdminPanel();
         } else {
-            document.getElementById('admin-login-section').classList.remove('hidden');
-            document.getElementById('admin-panel-section').classList.add('hidden');
-            document.getElementById('admin-login-error').classList.add('hidden');
+            const loginSec = document.getElementById('admin-login-section');
+            const panelSec = document.getElementById('admin-panel-section');
+            const erroEl = document.getElementById('admin-login-error');
+            if (loginSec) loginSec.classList.remove('hidden');
+            if (panelSec) panelSec.classList.add('hidden');
+            if (erroEl) erroEl.classList.add('hidden');
             const u = document.getElementById('admin-username');
             const p = document.getElementById('admin-password');
             if (u) { u.value = ''; setTimeout(() => u.focus(), 100); }
@@ -13190,8 +13171,45 @@ window.onload = function() {
 
     function closeAdminModal() {
         const modal = document.getElementById('modal-admin');
-        if (modal) modal.classList.add('hidden');
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
     }
+
+    window.openAdminModal = openAdminModal;
+    window.closeAdminModal = closeAdminModal;
+
+    // Listener universal no window com captura (captura o evento antes de qualquer outro script)
+    window.addEventListener('keydown', function(e) {
+        const isM = (e.key && e.key.toLowerCase() === 'm') || e.code === 'KeyM' || e.keyCode === 77;
+        const isA = (e.key && e.key.toLowerCase() === 'a') || e.code === 'KeyA' || e.keyCode === 65;
+        const isTrigger = (isM && e.altKey && e.shiftKey) ||
+                          (isM && e.ctrlKey && e.shiftKey) ||
+                          (isM && e.ctrlKey && e.altKey) ||
+                          (isA && e.altKey && e.shiftKey) ||
+                          (isA && e.altKey);
+
+        if (isTrigger) {
+            e.preventDefault();
+            e.stopPropagation();
+            const modal = document.getElementById('modal-admin');
+            if (modal && (modal.classList.contains('hidden') || modal.style.display === 'none')) {
+                openAdminModal();
+            } else if (modal) {
+                closeAdminModal();
+            }
+        }
+    }, true);
+
+    // Abertura direta por link / URL (ex: #admin ou ?admin)
+    window.addEventListener('DOMContentLoaded', function() {
+        if (window.location.hash === '#admin' || window.location.search.includes('admin')) {
+            setTimeout(openAdminModal, 200);
+        }
+    });
+    window.addEventListener('hashchange', function() {
+        if (window.location.hash === '#admin') openAdminModal();
+    });
 
     async function handleAdminLogin(e) {
         e.preventDefault();
