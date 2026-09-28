@@ -1,0 +1,1571 @@
+# ESCOLA DA FÉ — MIGRAÇÃO, CORREÇÃO E FINALIZAÇÃO DO PROJETO
+
+Você está trabalhando no projeto:
+
+**ESCOLA DA FÉ**
+
+Subtítulo:
+
+**Conhecer • Compreender • Viver**
+
+A aplicação é uma plataforma web de formação católica, com uma jornada progressiva de estudos, quizzes, gamificação, biblioteca de santos, história da Igreja, glossário, orações e certificado simbólico.
+
+---
+
+# 1. REGRA MAIS IMPORTANTE
+
+NÃO RECRIE O PROJETO DO ZERO.
+
+O arquivo atualmente fornecido é:
+
+`escola_da_f(4).html`
+
+Ele é a BASE ATUAL DO PROJETO.
+
+Seu trabalho é:
+
+**ANALISAR → PRESERVAR → CORRIGIR → COMPLETAR → VALIDAR**
+
+Não substitua a arquitetura existente por outra arbitrariamente.
+
+Não apague conteúdo para simplificar o código.
+
+Não reduza os módulos.
+
+Não transforme conteúdo real em placeholders.
+
+Não troque a trilha existente por uma lista simples.
+
+Não remova a gamificação.
+
+Não remova os elementos de formação já existentes.
+
+---
+
+# 2. OBJETIVO FINAL
+
+Entregar uma versão funcional e consistente da:
+
+**ESCOLA DA FÉ — V1.0**
+
+O resultado final deve possuir:
+
+* 10 etapas;
+* 50 módulos;
+* 250 questões;
+* 5 questões por módulo;
+* trilha visual;
+* progressão sequencial;
+* XP;
+* níveis;
+* conquistas;
+* histórico de quizzes;
+* quizzes perfeitos;
+* streak;
+* missões;
+* meta semanal funcionando;
+* biblioteca de santos;
+* história da Igreja;
+* glossário;
+* orações;
+* certificado simbólico;
+* persistência em localStorage;
+* responsividade;
+* validação de integridade.
+
+---
+
+# 3. O QUE JÁ EXISTE E DEVE SER PRESERVADO
+
+O arquivo atual já possui:
+
+* identidade visual;
+* cabeçalho;
+* navegação;
+* dashboard;
+* trilha;
+* etapas;
+* módulos;
+* aula teórica;
+* quiz;
+* feedback;
+* resultado;
+* biblioteca de santos;
+* timeline;
+* glossário;
+* conquistas;
+* certificado;
+* localStorage;
+* XP;
+* níveis;
+* streak;
+* missões;
+* validação de integridade.
+
+PRESERVE ESSAS PARTES.
+
+Melhore somente onde necessário.
+
+---
+
+# 4. IDENTIDADE VISUAL
+
+Preservar:
+
+* azul-marinho;
+* dourado/âmbar;
+* fundo claro;
+* Merriweather para títulos;
+* Inter para interface;
+* aparência elegante;
+* aparência de formação católica;
+* sensação de jornada;
+* interface limpa;
+* cards;
+* sombras discretas;
+* bordas arredondadas;
+* animações suaves.
+
+Não transformar em dashboard empresarial genérico.
+
+A aplicação precisa continuar parecendo:
+
+**uma jornada de formação católica.**
+
+---
+
+# 5. ESTRUTURA OFICIAL DO CURSO
+
+## ETAPA 1 — FUNDAMENTOS DA FÉ
+
+Módulo 1 — O que é a fé?
+
+Módulo 2 — Deus e a Revelação
+
+Módulo 3 — Fé, razão e liberdade
+
+Módulo 4 — A Santíssima Trindade
+
+Módulo 5 — A criação e a dignidade humana
+
+## ETAPA 2 — BÍBLIA E REVELAÇÃO
+
+Módulo 6 — O que é a Bíblia?
+
+Módulo 7 — Antigo e Novo Testamento
+
+Módulo 8 — Escritura, Tradição e Magistério
+
+Módulo 9 — Como ler a Bíblia
+
+Módulo 10 — Os quatro Evangelhos
+
+## ETAPA 3 — JESUS CRISTO
+
+Módulo 11 — Quem é Jesus Cristo?
+
+Módulo 12 — A Encarnação
+
+Módulo 13 — A vida pública de Jesus
+
+Módulo 14 — Paixão, Morte e Ressurreição
+
+Módulo 15 — Ascensão e Pentecostes
+
+## ETAPA 4 — IGREJA PRIMITIVA E APÓSTOLOS
+
+Módulo 16 — Pentecostes e o nascimento da Igreja
+
+Módulo 17 — Os Apóstolos
+
+Módulo 18 — São Pedro e São Paulo
+
+Módulo 19 — Os primeiros cristãos
+
+Módulo 20 — Mártires e perseguições
+
+## ETAPA 5 — HISTÓRIA DA IGREJA: ANTIGUIDADE
+
+Módulo 21 — As primeiras perseguições e o contexto do Império Romano
+
+Módulo 22 — Santo Inácio de Antioquia e os Padres Apostólicos
+
+Módulo 23 — O Édito de Milão e a liberdade dos cristãos
+
+Módulo 24 — O Concílio de Niceia e o desafio do arianismo
+
+Módulo 25 — Os Padres da Igreja e a defesa da fé
+
+## ETAPA 6 — HISTÓRIA DA IGREJA: IDADE MÉDIA
+
+Módulo 26 — São Bento e o nascimento do monaquismo ocidental
+
+Módulo 27 — A evangelização da Europa
+
+Módulo 28 — Carlos Magno, Império e Igreja
+
+Módulo 29 — O Cisma entre Oriente e Ocidente
+
+Módulo 30 — Universidades, ordens religiosas e florescimento medieval
+
+## ETAPA 7 — REFORMA E RUPTURAS DO OCIDENTE
+
+Módulo 31 — A crise religiosa do final da Idade Média
+
+Módulo 32 — Martinho Lutero e a Reforma Protestante
+
+Módulo 33 — João Calvino e o desenvolvimento da Reforma
+
+Módulo 34 — Henrique VIII e a ruptura da Inglaterra com Roma
+
+Módulo 35 — Principais diferenças entre a Reforma Protestante e a fé católica
+
+## ETAPA 8 — CONCÍLIO DE TRENTO E REFORMA CATÓLICA
+
+Módulo 36 — O Concílio de Trento
+
+Módulo 37 — Escritura, Tradição e a doutrina da justificação
+
+Módulo 38 — Os sacramentos e a Eucaristia
+
+Módulo 39 — A reforma pastoral depois de Trento
+
+Módulo 40 — Evangelização e missão após a Reforma
+
+## ETAPA 9 — SANTOS E GRANDES RENOVADORES
+
+Módulo 41 — Santo Inácio de Loyola e a Companhia de Jesus
+
+Módulo 42 — Santa Teresa de Ávila e São João da Cruz
+
+Módulo 43 — São Filipe Néri e São Carlos Borromeu
+
+Módulo 44 — São Francisco Xavier e a missão da Igreja
+
+Módulo 45 — Santidade: o chamado de todo cristão
+
+## ETAPA 10 — IGREJA MODERNA, CONCÍLIOS E VATICANO II
+
+Módulo 46 — A Igreja diante do mundo moderno
+
+Módulo 47 — O Concílio Vaticano I
+
+Módulo 48 — O Concílio Vaticano II
+
+Módulo 49 — A Igreja e os desafios do mundo contemporâneo
+
+Módulo 50 — A missão continua: viver a fé
+
+---
+
+# 6. REGRA DOS MÓDULOS
+
+Cada módulo deve possuir obrigatoriamente:
+
+```js
+{
+  id,
+  stageId,
+  num,
+  title,
+  subtitle,
+  difficulty,
+  estimatedMinutes,
+  objective,
+  theory,
+  keyPoints,
+  churchTeaching,
+  reflection,
+  sources,
+  quiz
+}
+```
+
+Cada `quiz` deve possuir:
+
+**exatamente 5 questões.**
+
+Cada questão deve possuir:
+
+* enunciado real;
+* 4 alternativas reais;
+* exatamente 1 alternativa correta;
+* explicação real.
+
+---
+
+# 7. PROIBIDO USAR PLACEHOLDERS
+
+Remover definitivamente qualquer estrutura semelhante a:
+
+```js
+Pergunta 1 do módulo X?
+Pergunta 2 do módulo X?
+Pergunta 3 do módulo X?
+Pergunta 4 do módulo X?
+Pergunta 5 do módulo X?
+```
+
+Remover também:
+
+```js
+Explicação 1 do módulo X
+Explicação 2 do módulo X
+```
+
+Não usar mais uma função genérica como `gQ()` para fabricar perguntas.
+
+As 250 questões devem estar definidas explicitamente.
+
+O código final deve conter perguntas reais.
+
+---
+
+# 8. CONTEÚDO PEDAGÓGICO
+
+Preservar e consolidar o conteúdo já existente.
+
+O curso deve seguir o eixo:
+
+**Conhecer → Compreender → Viver**
+
+A estrutura pedagógica deve continuar contendo:
+
+### O que vou aprender?
+
+Objetivo do módulo.
+
+### Conteúdo
+
+Texto teórico desenvolvido.
+
+### Pontos-chave
+
+5 pontos principais.
+
+### O que a Igreja ensina?
+
+Síntese doutrinal.
+
+### Reflexão pessoal
+
+Pergunta para aplicação pessoal.
+
+### Fontes
+
+Catecismo, Escritura, documentos e referências históricas apropriadas.
+
+### Quiz
+
+5 questões.
+
+---
+
+# 9. CUIDADOS DOUTRINAIS
+
+Preservar uma apresentação claramente católica.
+
+Não transformar o conteúdo em ataque a outras religiões.
+
+Não usar linguagem ofensiva.
+
+Não criar caricaturas históricas.
+
+Não afirmar que todos os protestantes pensam da mesma maneira.
+
+Não dizer que o Édito de Milão tornou o cristianismo religião oficial do Império.
+
+Não apresentar todas as perseguições romanas como 300 anos contínuos.
+
+Não chamar toda a Idade Média de “Idade das Trevas”.
+
+Não apresentar tradição posterior como fato histórico comprovado sem ressalva.
+
+Diferenciar:
+
+* história;
+* tradição;
+* doutrina;
+* interpretação teológica.
+
+---
+
+# 10. ETAPA 6 — CORRIGIR ID
+
+A Etapa 6 deve utilizar:
+
+```js
+etp6
+```
+
+e não:
+
+```js
+etapa6
+```
+
+Todos os módulos 26–30 devem possuir:
+
+```js
+stageId: "etp6"
+```
+
+Nenhum módulo pode apontar para uma etapa inexistente.
+
+---
+
+# 11. TRILHA VISUAL
+
+Preservar a trilha atual.
+
+Ela deve continuar exibindo:
+
+* 10 etapas;
+* status da etapa;
+* progresso;
+* módulos;
+* bloqueio;
+* desbloqueio;
+* etapa atual;
+* módulo atual;
+* concluído;
+* próximo.
+
+Estados visuais:
+
+* bloqueado;
+* disponível;
+* em andamento;
+* concluído.
+
+A etapa em andamento deve possuir:
+
+**Você está aqui**
+
+A experiência deve continuar parecida com uma jornada.
+
+Não converter para uma simples lista vertical.
+
+---
+
+# 12. DESBLOQUEIO
+
+A progressão deve funcionar:
+
+Módulo 1:
+
+desbloqueado.
+
+Módulo 2:
+
+bloqueado até concluir o Módulo 1.
+
+Módulo 3:
+
+bloqueado até concluir o Módulo 2.
+
+E assim por diante.
+
+O usuário não deve pular livremente módulos futuros sem desbloqueio.
+
+Módulos anteriores permanecem acessíveis depois de concluídos.
+
+---
+
+# 13. BOTÃO CONTINUAR JORNADA
+
+O botão:
+
+**Continuar Jornada**
+
+deve abrir automaticamente:
+
+o primeiro módulo ainda não concluído e desbloqueado.
+
+Caso os 50 estejam concluídos:
+
+abrir o certificado.
+
+---
+
+# 14. NAVEGAÇÃO ENTRE MÓDULOS
+
+No topo de cada módulo:
+
+* Voltar à Jornada;
+* módulo anterior;
+* próximo módulo.
+
+Os botões devem respeitar o desbloqueio.
+
+Corrigir também a barra de progresso da etapa.
+
+Exemplo:
+
+5 módulos em uma etapa:
+
+Módulo 1 = 20%
+Módulo 2 = 40%
+Módulo 3 = 60%
+Módulo 4 = 80%
+Módulo 5 = 100%
+
+A barra deve refletir corretamente a posição do aluno.
+
+---
+
+# 15. QUIZ
+
+Cada quiz:
+
+5 perguntas.
+
+Cada pergunta:
+
+4 alternativas.
+
+Após clicar:
+
+mostrar imediatamente:
+
+* correto/incorreto;
+* explicação;
+* próxima pergunta.
+
+No final:
+
+mostrar:
+
+pontuação;
+
+percentual;
+
+estado:
+
+### Módulo concluído
+
+ou:
+
+### Revisão recomendada
+
+Critério atual:
+
+50% ou mais = concluído.
+
+Menos de 50% = recomendar revisão.
+
+---
+
+# 16. HISTÓRICO
+
+Persistir:
+
+```js
+progress.quizHistory
+```
+
+Cada entrada deve conter:
+
+```js
+{
+  moduleId,
+  score,
+  total,
+  percentage,
+  perfect,
+  date
+}
+```
+
+Não utilizar nomes inconsistentes como `mod` em uma versão e `moduleId` em outra.
+
+Padronizar.
+
+---
+
+# 17. QUIZ PERFEITO
+
+Criar:
+
+```js
+progress.perfectQuizzes
+```
+
+Registrar o módulo quando o aluno obtiver:
+
+100%.
+
+Não duplicar IDs.
+
+---
+
+# 18. XP
+
+Manter gamificação.
+
+Sugestão definitiva:
+
+Concluir módulo:
+
++100 XP
+
+Concluir quiz:
+
++50 XP
+
+Cada resposta correta:
+
++10 XP
+
+Quiz perfeito:
+
++50 XP bônus
+
+Concluir etapa:
+
++250 XP
+
+Concluir todos os 50:
+
++1000 XP
+
+Missões possuem seus próprios bônus.
+
+IMPORTANTE:
+
+Não duplicar recompensas.
+
+Cada recompensa deve ser dada apenas uma vez quando for uma recompensa de conquista.
+
+---
+
+# 19. NÍVEIS
+
+Usar:
+
+Nível 1 — Buscador
+0 XP
+
+Nível 2 — Discípulo
+250 XP
+
+Nível 3 — Aprendiz
+500 XP
+
+Nível 4 — Estudioso
+1000 XP
+
+Nível 5 — Discípulo da Palavra
+1750 XP
+
+Nível 6 — Conhecedor da Fé
+2500 XP
+
+Nível 7 — Mestre da Jornada
+4000 XP
+
+Nível 8 — Peregrino da Fé
+6000 XP
+
+Nível 9 — Testemunha
+8000 XP
+
+Nível 10 — Formado na Fé
+10000 XP
+
+Mostrar no dashboard:
+
+* nível;
+* nome;
+* XP;
+* progresso.
+
+---
+
+# 20. STREAK
+
+Manter:
+
+```js
+progress.studyDates
+```
+
+Registrar uma data quando houver atividade real de estudo.
+
+Não registrar atividade simplesmente por abrir a página.
+
+O streak deve considerar dias consecutivos reais.
+
+Corrigir lógica para:
+
+hoje;
+ontem;
+anteontem;
+
+etc.
+
+Não criar streak artificial simplesmente porque o dashboard abriu.
+
+---
+
+# 21. META SEMANAL — CORRIGIR
+
+Atualmente existe a interface:
+
+```text
+Meta Semanal
+0 / 5
+```
+
+mas a lógica está incompleta.
+
+IMPLEMENTAR DE VERDADE.
+
+Meta padrão:
+
+**5 módulos por semana**
+
+Estrutura:
+
+```js
+weeklyGoal: {
+  weekKey,
+  target: 5,
+  completed: 0
+}
+```
+
+A cada conclusão de módulo:
+
+incrementar `completed`.
+
+Não contar duas vezes o mesmo módulo na mesma semana.
+
+Quando iniciar uma nova semana:
+
+reiniciar `completed`.
+
+Exibir:
+
+`0 / 5`
+
+`1 / 5`
+
+etc.
+
+Barra percentual.
+
+Ao completar:
+
+`5 / 5`
+
+Mostrar:
+
+**Meta semanal concluída!**
+
+---
+
+# 22. MISSÕES — COMPLETAR
+
+O projeto já possui quatro campos:
+
+```js
+m1
+m2
+m3
+m4
+```
+
+Mas atualmente apenas duas estão efetivamente implementadas.
+
+Implementar as quatro:
+
+### Missão 1
+
+Concluir 1 módulo.
+
+Recompensa:
+
++50 XP
+
+### Missão 2
+
+Conseguir um Quiz Perfeito.
+
+Recompensa:
+
++100 XP
+
+### Missão 3
+
+Concluir 3 módulos.
+
+Recompensa:
+
++150 XP
+
+### Missão 4
+
+Concluir uma etapa completa.
+
+Recompensa:
+
++250 XP
+
+As quatro devem aparecer no dashboard.
+
+Cada missão deve mostrar:
+
+* pendente;
+* concluída.
+
+Não duplicar recompensa.
+
+---
+
+# 23. CONQUISTAS
+
+Preservar as existentes.
+
+Garantir pelo menos:
+
+Primeiro Passo
+
+Discípulo
+
+Estudioso
+
+Mestre da História
+
+Metade do Caminho
+
+Persistente
+
+Etapa Concluída
+
+Peregrino
+
+Quiz Perfeito
+
+Mente Afiada
+
+Grande Estudioso
+
+Bibliotecário da Fé
+
+Historiador
+
+Conhecedor
+
+Formado na Fé
+
+Jornada de Fé Completa
+
+As conquistas devem ser calculadas automaticamente.
+
+---
+
+# 24. BIBLIOTECA DOS SANTOS
+
+Preservar a tela existente.
+
+Deve possuir:
+
+* busca;
+* nome;
+* título;
+* época;
+* local;
+* categoria;
+* biografia.
+
+Não remover os santos já existentes.
+
+Permitir expansão futura.
+
+---
+
+# 25. HISTÓRIA DA IGREJA
+
+Preservar a timeline.
+
+Garantir eventos principais:
+
+Pentecostes
+
+Perseguições
+
+Édito de Milão
+
+Niceia
+
+Cisma do Oriente e Ocidente
+
+Reforma Protestante
+
+Companhia de Jesus
+
+Concílio de Trento
+
+Vaticano I
+
+Vaticano II
+
+Período contemporâneo
+
+Os textos devem possuir equilíbrio histórico.
+
+---
+
+# 26. GLOSSÁRIO
+
+Preservar.
+
+Garantir pelo menos:
+
+Fé
+
+Revelação
+
+Dogma
+
+Tradição
+
+Magistério
+
+Sacramento
+
+Eucaristia
+
+Transubstanciação
+
+Trindade
+
+Encarnação
+
+Justificação
+
+Concílio
+
+Reforma
+
+Monaquismo
+
+Ecumenismo
+
+Santidade
+
+Infalibilidade
+
+Vaticano I
+
+Vaticano II
+
+Doutrina Social da Igreja
+
+Bem comum
+
+Solidariedade
+
+Subsidiariedade
+
+Evangelização
+
+---
+
+# 27. ORAÇÕES — RESTAURAR
+
+A versão atual perdeu a seção de Orações.
+
+RESTAURAR.
+
+Adicionar na navegação:
+
+**Orações**
+
+Criar view:
+
+```html
+view-prayers
+```
+
+Adicionar orações fundamentais.
+
+Pelo menos:
+
+* Pai-Nosso;
+* Ave-Maria;
+* Glória ao Pai;
+* Credo;
+* Ato de Contrição;
+* Salve-Rainha;
+* Santo Anjo;
+* Vinde, Espírito Santo;
+* oração de São Francisco;
+* oração antes dos estudos.
+
+Cada oração deve ser exibida em card.
+
+Pode haver:
+
+* copiar;
+* favoritar;
+* marcar como rezada.
+
+Ao marcar como rezada, pode existir recompensa pequena de XP, mas não permitir abuso infinito.
+
+Exemplo:
+
+uma mesma oração:
+
++10 XP apenas uma vez por dia.
+
+---
+
+# 28. CERTIFICADO
+
+Preservar o certificado simbólico.
+
+Quando:
+
+50/50 módulos
+
+e
+
+250/250 questões disponíveis/concluíveis
+
+estiverem completos,
+
+mostrar:
+
+**Certificado Simbólico de Conclusão**
+
+Com:
+
+Escola da Fé
+
+Jornada de Formação Católica
+
+Jornada Concluída
+
+50 módulos
+
+250 questões
+
+100%
+
+Adicionar claramente:
+
+Este certificado é um marco pessoal de aprendizagem.
+
+Não substitui:
+
+* sacramentos;
+* catequese;
+* formação oficial;
+* certificações acadêmicas.
+
+---
+
+# 29. LOCALSTORAGE
+
+Manter:
+
+```js
+escola_da_fe_progress
+```
+
+Estrutura final:
+
+```js
+{
+  completedModules: [],
+  badges: [],
+  xp: 0,
+  quizHistory: [],
+  perfectQuizzes: [],
+  studyDates: [],
+  missions: {
+    m1: false,
+    m2: false,
+    m3: false,
+    m4: false
+  },
+  weeklyGoal: {
+    weekKey: "",
+    target: 5,
+    completed: 0
+  }
+}
+```
+
+IMPORTANTE:
+
+Não apagar dados existentes.
+
+Fazer merge dos campos novos.
+
+Se o usuário já possuir progresso:
+
+preservar.
+
+---
+
+# 30. MIGRAÇÃO
+
+Criar uma função:
+
+```js
+migrateProgress()
+```
+
+Ela deve:
+
+1. Ler localStorage.
+2. Detectar campos ausentes.
+3. Adicionar somente campos faltantes.
+4. Não apagar módulos concluídos.
+5. Não zerar XP.
+6. Não apagar badges.
+7. Não apagar histórico.
+8. Não duplicar dados.
+
+Executar na inicialização.
+
+---
+
+# 31. VALIDAÇÃO AUTOMÁTICA
+
+Criar uma validação REAL.
+
+Verificar:
+
+### Etapas
+
+```js
+STAGES.length === 10
+```
+
+### Módulos
+
+```js
+MODULES.length === 50
+```
+
+### Questões
+
+```js
+MODULES.reduce(
+  (sum, m) => sum + m.quiz.length,
+  0
+) === 250
+```
+
+Além disso:
+
+verificar todos os IDs;
+
+verificar títulos;
+
+verificar stageId;
+
+verificar 5 questões por módulo;
+
+verificar 4 alternativas por questão;
+
+verificar exatamente 1 correta;
+
+verificar existência de:
+
+objective
+theory
+keyPoints
+churchTeaching
+reflection
+sources
+
+Não basta validar apenas quantidade.
+
+---
+
+# 32. VALIDAÇÃO DOS STAGE IDS
+
+Criar:
+
+```js
+const validStageIds = new Set(STAGES.map(s => s.id));
+```
+
+Para cada módulo:
+
+```js
+validStageIds.has(module.stageId)
+```
+
+Se falso:
+
+erro.
+
+---
+
+# 33. VALIDAÇÃO DOS QUIZZES
+
+Para cada módulo:
+
+```js
+module.quiz.length === 5
+```
+
+Para cada pergunta:
+
+```js
+question.options.length === 4
+```
+
+Contar `correct === true`.
+
+Tem que ser:
+
+```js
+1
+```
+
+Se houver:
+
+0
+
+ou
+
+2+
+
+mostrar erro no console.
+
+---
+
+# 34. CONSOLE FINAL
+
+Ao iniciar:
+
+mostrar:
+
+```text
+========================================
+ESCOLA DA FÉ — VALIDAÇÃO
+========================================
+
+Etapas: 10/10
+Módulos: 50/50
+Questões: 250/250
+
+Questões por módulo: OK
+Alternativas: OK
+Respostas corretas: OK
+Stage IDs: OK
+Conteúdo: OK
+Trilha: OK
+Desbloqueio: OK
+Progresso: OK
+XP: OK
+Níveis: OK
+Conquistas: OK
+Streak: OK
+Missões: OK
+Meta semanal: OK
+Santos: OK
+Timeline: OK
+Glossário: OK
+Orações: OK
+Certificado: OK
+
+========================================
+PROJETO ÍNTEGRO
+========================================
+```
+
+Se qualquer item falhar:
+
+mostrar:
+
+```text
+FALHA NA INTEGRIDADE
+```
+
+e listar exatamente o problema.
+
+---
+
+# 35. TESTES OBRIGATÓRIOS
+
+Testar:
+
+Módulo 1
+
+Módulo 5
+
+Módulo 6
+
+Módulo 10
+
+Módulo 15
+
+Módulo 20
+
+Módulo 25
+
+Módulo 30
+
+Módulo 35
+
+Módulo 40
+
+Módulo 45
+
+Módulo 50
+
+Verificar:
+
+* abertura;
+* conteúdo;
+* quiz;
+* feedback;
+* conclusão;
+* XP;
+* badge;
+* desbloqueio;
+* próximo módulo;
+* anterior;
+* streak;
+* missão;
+* meta semanal.
+
+---
+
+# 36. TESTE DE DESBLOQUEIO
+
+Estado inicial:
+
+Somente M1 desbloqueado.
+
+Concluir M1:
+
+M2 desbloqueado.
+
+Concluir M2:
+
+M3 desbloqueado.
+
+Continuar até M50.
+
+---
+
+# 37. TESTE DE PERSISTÊNCIA
+
+Abrir módulo.
+
+Concluir.
+
+Fechar página.
+
+Abrir novamente.
+
+O progresso deve permanecer.
+
+Testar também:
+
+XP.
+
+Badges.
+
+Histórico.
+
+Streak.
+
+Missões.
+
+Meta semanal.
+
+---
+
+# 38. RESPONSIVIDADE
+
+Testar:
+
+320px
+
+375px
+
+390px
+
+414px
+
+768px
+
+1024px
+
+1280px
+
+1440px
+
+Não permitir:
+
+overflow horizontal.
+
+---
+
+# 39. ACESSIBILIDADE
+
+Adicionar:
+
+* labels apropriados;
+* aria-label nos ícones quando necessário;
+* foco visível;
+* botões com textos claros;
+* contraste adequado;
+* navegação por teclado.
+
+---
+
+# 40. PERFORMANCE
+
+Não utilizar bibliotecas desnecessárias.
+
+Não fazer loops infinitos.
+
+Não renderizar centenas de elementos desnecessariamente.
+
+Evitar chamadas repetidas de renderização.
+
+Não recalcular todos os componentes sem necessidade.
+
+---
+
+# 41. SEGURANÇA DO CÓDIGO
+
+Como é uma aplicação frontend local:
+
+* não utilizar APIs privadas;
+* não armazenar dados sensíveis;
+* não expor chaves;
+* não colocar credenciais;
+* não criar autenticação falsa.
+
+---
+
+# 42. ARQUITETURA RECOMENDADA
+
+Mesmo que o projeto continue em HTML único inicialmente, organizar o código internamente em blocos:
+
+```text
+CONFIG
+STATE
+MIGRATION
+STAGES
+MODULES
+SAINTS
+TIMELINE
+GLOSSARY
+PRAYERS
+LEVELS
+BADGES
+MISSIONS
+XP
+QUIZ ENGINE
+NAVIGATION
+TRAIL
+RENDERERS
+VALIDATION
+INITIALIZATION
+```
+
+Não misturar todas as responsabilidades em uma única função.
+
+---
+
+# 43. NÃO FAZER
+
+Não:
+
+* remover os módulos;
+* substituir conteúdo real por placeholders;
+* apagar localStorage;
+* resetar progresso;
+* remover a trilha;
+* remover o quiz;
+* remover o certificado;
+* retirar santos;
+* retirar timeline;
+* retirar glossário;
+* retirar orações depois de restauradas;
+* criar apenas uma demo visual;
+* parar quando a interface “parecer bonita”.
+
+O objetivo é:
+
+**FUNCIONALIDADE + CONTEÚDO + INTEGRIDADE.**
+
+---
+
+# 44. ENTREGA
+
+Ao concluir:
+
+1. validar o JavaScript;
+2. verificar erros no console;
+3. verificar 10 etapas;
+4. verificar 50 módulos;
+5. verificar 250 questões;
+6. testar navegação;
+7. testar quiz;
+8. testar localStorage;
+9. testar gamificação;
+10. testar Orações;
+11. testar responsividade.
+
+Depois apresentar no console:
+
+```text
+ESCOLA DA FÉ V1.0
+10 etapas ✓
+50 módulos ✓
+250 questões ✓
+Trilha ✓
+Quiz ✓
+Gamificação ✓
+Santos ✓
+História ✓
+Glossário ✓
+Orações ✓
+Certificado ✓
+Persistência ✓
+Validação ✓
+
+PROJETO FINALIZADO
+```
+
+---
+
+# 45. REGRA FINAL PARA O ANTIGRAVITY
+
+Não me entregue apenas um plano.
+
+Não diga que “seria possível”.
+
+Não entregue pseudocódigo.
+
+Não substitua o conteúdo por exemplos.
+
+REALIZE AS ALTERAÇÕES NO PROJETO.
+
+Primeiro analise o `escola_da_f(4).html`.
+
+Depois corrija.
+
+Depois valide.
+
+Depois teste.
+
+Somente depois considere a tarefa concluída.
+
+A meta final é:
+
+**ESCOLA DA FÉ — 10 ETAPAS • 50 MÓDULOS • 250 QUESTÕES • JORNADA COMPLETA**

@@ -394,6 +394,63 @@
 
             <!-- TRILHA VISUAL (ETAPAS E MÓDULOS) -->
             <div class="relative py-6" id="trail-container"></div>
+
+            <!-- BANNER DE APOIO FRATERNO -->
+            <div id="banner-apoio-dashboard" class="mt-2 mb-4 rounded-3xl overflow-hidden shadow-lg border border-amber-500/30 relative" style="background: linear-gradient(135deg, #0f172a 0%, #1e1a0e 50%, #0f172a 100%);">
+                <!-- Ornamento decorativo -->
+                <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-48 h-48 rounded-full opacity-10" style="background: radial-gradient(circle, #f59e0b, transparent);"></div>
+                    <div class="absolute -left-8 -bottom-8 w-48 h-48 rounded-full opacity-10" style="background: radial-gradient(circle, #f59e0b, transparent);"></div>
+                    <div class="absolute top-4 left-6 text-6xl opacity-5 font-serif select-none">✝</div>
+                    <div class="absolute bottom-4 right-6 text-6xl opacity-5 font-serif select-none">✝</div>
+                </div>
+
+                <div class="relative z-10 p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <!-- Ícone e texto -->
+                    <div class="flex-1 text-center md:text-left">
+                        <span class="inline-block text-[9px] uppercase font-black tracking-widest text-amber-400 bg-amber-500/15 px-3 py-1 rounded-full border border-amber-500/30 mb-3">Apostolado Independente</span>
+                        <h3 class="font-serif font-black text-xl md:text-2xl text-white mb-2 leading-tight">
+                            Esta plataforma vive do seu apoio
+                        </h3>
+                        <p class="text-slate-300 text-sm leading-relaxed max-w-lg">
+                            A <strong class="text-amber-400">Escola da Fé</strong> é gratuita, sem fins lucrativos e mantida com amor e fidelidade à Tradição Católica. Se este trabalho tocou sua vida, considere oferecer um cafezinho ao apostolado — cada apoio sustenta a missão.
+                        </p>
+                        <!-- Contador da comunidade -->
+                        <div class="mt-4 flex flex-wrap gap-4 justify-center md:justify-start">
+                            <div class="flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2">
+                                <span class="text-amber-400 text-lg">👥</span>
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-bold leading-none">Estudantes</p>
+                                    <p class="text-white font-black text-base leading-tight" id="ctr-total-students">—</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2">
+                                <span class="text-amber-400 text-lg">🎓</span>
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-bold leading-none">Certificados</p>
+                                    <p class="text-white font-black text-base leading-tight" id="ctr-certified">—</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 bg-white/10 rounded-xl px-4 py-2">
+                                <span class="text-amber-400 text-lg">📖</span>
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase font-bold leading-none">Módulos concluídos</p>
+                                    <p class="text-white font-black text-base leading-tight" id="ctr-modules">—</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botão de apoio -->
+                    <div class="shrink-0 flex flex-col items-center gap-3">
+                        <button onclick="openApoioModal()" class="px-7 py-3.5 bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-sm rounded-2xl shadow-lg hover:shadow-amber-500/30 hover:-translate-y-0.5 active:scale-95 transition-all flex items-center gap-2.5">
+                            <span class="text-lg">☕</span>
+                            <span>Apoiar o Apostolado</span>
+                        </button>
+                        <p class="text-[10px] text-slate-400 text-center max-w-[160px] leading-relaxed">Qualquer valor. PIX rápido e seguro.<br>Deus te abençoe!</p>
+                    </div>
+                </div>
+            </div>
             
         </div>
 
@@ -10475,6 +10532,16 @@ function openModule(id) {
         return;
     }
 
+    // Módulo 2+ requer cadastro para salvar progresso na nuvem
+    if (modGlobalIndex >= 1) {
+        const estudante = (typeof StudentManager !== 'undefined') ? StudentManager.getStudent() : null;
+        if (!estudante || !estudante.fullName) {
+            showToast("Cadastre-se para continuar! Seu progresso será salvo na nuvem 🙏", "warning");
+            openEnrollmentModal('pos-modulo1');
+            return;
+        }
+    }
+
     currentModuleId = id;
     const mod = MODULES[modGlobalIndex];
     const stage = STAGES.find(s => s.id === mod.stageId);
@@ -11083,6 +11150,16 @@ function finishQuiz() {
                     openApoioModal();
                 }
             }, 1400);
+        }
+
+        // Pede cadastro ao concluir o módulo 1 (se ainda não cadastrado)
+        if (modNumber === 1) {
+            const estudante = (typeof StudentManager !== 'undefined') ? StudentManager.getStudent() : null;
+            if (!estudante || !estudante.fullName) {
+                setTimeout(() => {
+                    openEnrollmentModal('pos-modulo1');
+                }, 800);
+            }
         }
 
         if (resIcon) {
@@ -12540,16 +12617,14 @@ const StudentManager = {
 
     checkEnrollmentOnStart() {
         const student = this.getStudent();
-        if (!student || !student.fullName) {
-            setTimeout(() => {
-                openEnrollmentModal();
-            }, 600);
-        } else {
+        if (student && student.fullName) {
             this.updateUi();
             this.syncWithServer(student);
             // Restaura progresso do servidor (sync cross-device)
             this.restoreProgressFromServer(student.email);
         }
+        // Não abre modal automaticamente: o aluno pode explorar o Módulo 1 livremente.
+        // O cadastro será solicitado ao concluir o primeiro módulo.
     },
 
     async restoreProgressFromServer(email) {
@@ -12783,11 +12858,26 @@ const InboxManager = {
     }
 };
 
-function openEnrollmentModal() {
+function openEnrollmentModal(contexto) {
     const modal = document.getElementById('modal-enrollment');
     const inputName = document.getElementById('enrollment-name');
     const inputEmail = document.getElementById('enrollment-email');
     const student = StudentManager.getStudent();
+
+    // Adapta o título e subtítulo conforme o contexto
+    const tituloEl = modal ? modal.querySelector('h3') : null;
+    const subEl = modal ? modal.querySelector('.text-\\[11px\\].text-slate-300') : null;
+    const badgeEl = modal ? modal.querySelector('.text-\\[9px\\]') : null;
+
+    if (contexto === 'pos-modulo1') {
+        if (tituloEl) tituloEl.textContent = 'Parabéns! Salve seu progresso 🎉';
+        if (subEl) subEl.textContent = 'Você concluiu o Módulo 1! Cadastre-se agora para salvar seu histórico na nuvem e continuar de qualquer dispositivo.';
+        if (badgeEl) badgeEl.textContent = 'Módulo 1 Concluído';
+    } else {
+        if (tituloEl) tituloEl.textContent = 'Matrícula Solene do Estudante';
+        if (subEl) subEl.textContent = 'Inicie sua jornada através dos 50 módulos canônicos da Sagrada Tradição e do Magistério.';
+        if (badgeEl) badgeEl.textContent = 'Inscrição Formativa';
+    }
 
     if (student) {
         if (inputName) inputName.value = student.fullName || '';
@@ -13109,7 +13199,45 @@ window.onload = function() {
     renderPrayers();
     StudentManager.checkEnrollmentOnStart();
     InboxManager.loadInbox();
+    loadCommunityStats();
 };
+
+/* ================= COMMUNITY STATS BANNER ================= */
+async function loadCommunityStats() {
+    // Formata número de forma atraente e honesta
+    function fmtStudents(n) {
+        if (n <= 0) return 'Pioneiros';
+        if (n < 10) return n + ' pioneiros';
+        if (n < 50) return 'Mais de ' + (Math.floor(n / 10) * 10);
+        if (n < 100) return 'Mais de ' + (Math.floor(n / 10) * 10);
+        if (n < 1000) return 'Mais de ' + (Math.floor(n / 50) * 50);
+        return '+' + Number(n).toLocaleString('pt-BR');
+    }
+    function fmtModules(n) {
+        if (n <= 0) return '—';
+        return Number(n).toLocaleString('pt-BR');
+    }
+    function fmtCertified(n) {
+        if (n <= 0) return '—';
+        return n + (n === 1 ? ' formado' : ' formados');
+    }
+
+    try {
+        const res = await fetch('/api/student/stats');
+        if (!res.ok) return;
+        const d = await res.json();
+        if (!d.ok) return;
+
+        const el1 = document.getElementById('ctr-total-students');
+        const el2 = document.getElementById('ctr-certified');
+        const el3 = document.getElementById('ctr-modules');
+        if (el1) el1.textContent = fmtStudents(d.totalStudents || 0);
+        if (el2) el2.textContent = fmtCertified(d.certifiedStudents || 0);
+        if (el3) el3.textContent = fmtModules(d.totalCompletedModules || 0);
+    } catch(e) {
+        // Silencia erros de rede — banner continua com "—"
+    }
+}
 
     </script>
 
