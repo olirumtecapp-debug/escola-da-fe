@@ -47,9 +47,9 @@ if (!fs.existsSync(INBOX_FILE)) {
                 id: 'b1',
                 sender: 'Coordenação Pedagógica da Escola da Fé',
                 tag: 'Acolhida Solene',
-                title: 'Seja bem-vindo(a) à sua Jornada Canônica de Fé!',
+                title: 'Seja bem-vindo(a) à sua Jornada de Formação na Fé!',
                 date: new Date().toISOString().split('T')[0],
-                content: 'Louvado seja Nosso Senhor Jesus Cristo! É com imensa alegria fraterna que acolhemos você nesta jornada de formação. Ao longo destes 50 módulos canônicos, você beberá da Sagrada Escritura, da Tradição Apostólica, do Sagrado Magistério e dos Santos Doutores da Igreja. Que o Espírito Santo ilumine sua inteligência e inflame seu coração. Bons estudos e que Santa Teresinha interceda por seu caminho!'
+                content: 'Louvado seja Nosso Senhor Jesus Cristo! É com imensa alegria fraterna que acolhemos você nesta jornada de formação. Ao longo destes 50 módulos formativos, você beberá da Sagrada Escritura, da Tradição Apostólica, do Sagrado Magistério e dos Santos Doutores da Igreja. Que o Espírito Santo ilumine sua inteligência e inflame seu coração. Bons estudos e que Santa Teresinha interceda por seu caminho!'
             },
             {
                 id: 'b2',
