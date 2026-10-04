@@ -10936,12 +10936,18 @@ function finishQuiz() {
             }
         }
 
-        // Gatilho inteligente de Apoio Fraterno a partir do Módulo 2 (se ainda não apoiou)
+        // Gatilho discreto de Apoio Fraterno a cada 5 módulos concluídos (ex: 5, 10, 15, 20...)
         const modNumber = mod.num || (parseInt(mod.id.replace('m', '')) || 1);
-        if (modNumber >= 2 && (!progress.hasSupported)) {
+        const hideApoio = localStorage.getItem('escoladafe_hide_apoio') === 'true';
+        const completedTotal = (typeof progress !== 'undefined' && progress && progress.completedModules) ? progress.completedModules.length : modNumber;
+        const isApoioMilestone = (completedTotal > 0 && completedTotal % 5 === 0) || (modNumber > 0 && modNumber % 5 === 0);
+        const lastApoioMilestone = parseInt(localStorage.getItem('escoladafe_last_apoio_module') || '0', 10);
+
+        if (isApoioMilestone && completedTotal !== lastApoioMilestone && (!progress.hasSupported) && !hideApoio) {
+            localStorage.setItem('escoladafe_last_apoio_module', String(completedTotal));
             setTimeout(() => {
                 if (typeof openApoioModal === 'function') {
-                    openApoioModal();
+                    openApoioModal(false);
                 }
             }, 1400);
         }

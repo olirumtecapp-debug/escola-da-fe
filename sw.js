@@ -1,5 +1,5 @@
 // Service Worker para Escola da Fé PWA
-const CACHE_NAME = 'escoladafe-v2';
+const CACHE_NAME = 'escoladafe-v3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

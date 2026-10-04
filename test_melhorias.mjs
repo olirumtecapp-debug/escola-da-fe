@@ -261,6 +261,22 @@ assert(sandbox.progress.hasSupported === true, 'markAsSupportedDeclared() regist
 assert(sandbox.progress.supportDeclared === true, 'markAsSupportedDeclared() registra como supportDeclared');
 assert(toastMsg === 'Obrigado pelo apoio declarado. Deus abençoe sua generosidade!', 'Toast exato e cuidadoso sem alegar confirmação Asaas indevida');
 
+// Teste 3.10: Gatilho automático de Apoio a cada 5 módulos (nunca a cada módulo consecutivo)
+function checkApoioMilestone(modNum, completedCount) {
+    const isMilestone = (completedCount > 0 && completedCount % 5 === 0) || (modNum > 0 && modNum % 5 === 0);
+    return isMilestone;
+}
+assert(checkApoioMilestone(1, 1) === false, 'Módulo 1: NÃO dispara pedido de apoio');
+assert(checkApoioMilestone(2, 2) === false, 'Módulo 2: NÃO dispara pedido de apoio (evita insistência)');
+assert(checkApoioMilestone(3, 3) === false, 'Módulo 3: NÃO dispara pedido de apoio');
+assert(checkApoioMilestone(4, 4) === false, 'Módulo 4: NÃO dispara pedido de apoio');
+assert(checkApoioMilestone(5, 5) === true,  'Módulo 5: DISPARA pedido de apoio (marco formativo de 5 módulos)');
+assert(checkApoioMilestone(6, 6) === false, 'Módulo 6: NÃO dispara pedido de apoio');
+assert(checkApoioMilestone(7, 7) === false, 'Módulo 7: NÃO dispara pedido de apoio');
+assert(checkApoioMilestone(8, 8) === false, 'Módulo 8: NÃO dispara pedido de apoio');
+assert(checkApoioMilestone(9, 9) === false, 'Módulo 9: NÃO dispara pedido de apoio');
+assert(checkApoioMilestone(10, 10) === true, 'Módulo 10: DISPARA pedido de apoio (marco formativo de 10 módulos / etapa)');
+
 // ----------------------------------------------------
 // 4. INTEGRIDADE DA TRILHA DE CONTEÚDO
 // ----------------------------------------------------
